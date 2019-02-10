@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>SlotMachine</title>
+	<link rel="icon" href="./img/BAR.png">
+	<script src="./js/helpers.js"></script>
+	<script src="./js/resource.loader.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+</head>
+<body>
+<div class="container">
+	<h2 class="text-center text-light">Slot Game</h2>
+	<div class="row justify-content-center">
+		<div class="col col-auto">
+			<canvas id="slot" width="423" height="363"></canvas>
+		</div>
+	</div>
+	<div class="row justify-content-center mb-3">
+		<div class="col col-auto">
+			<button class="btn btn-primary px-5" id="spin">Spin</button>
+			<label for="balance" class="text-light">Money:</label>
+			<input class="btn" type="number" id="balance" min="1" max="5000">
+		</div>
+	</div>
+	<div class="row justify-content-center">
+		<div class="col col-auto">
+			<select id="mode" class="btn btn-default">
+				<option value="1">Random</option>
+				<option value="0">Fixed</option>
+			</select>
+			<select id="where" class="btn btn-default">
+				<option value="0">top</option>
+				<option value="1">middle</option>
+				<option value="2">bottom</option>
+			</select>
+			<select id="what" class="btn btn-default">
+			</select>
+			
+		</div>
+	</div>	
+</div>
+<script src="./js/reel.js"></script>
+<script src="./js/slot.js"></script>
+<script type="text/javascript">
+let conf = {
+	fps: 46,//60,
+	img: [],
+	width: 423,
+	height: 363,
+	canvas: document.getElementById('slot'),
+	spinBtn: document.getElementById('spin'),
+	mode: document.getElementById('mode'),
+	where: document.getElementById('where'),
+	what: document.getElementById('what'),
+	balance: document.getElementById('balance'),
+	reel: {
+		width: 141,
+		height: 121,
+		xOffsets: [0, 141, 282],
+		animation: [2000, 2500, 3000].map(x => x*1)
+	},
+	pSkip: 60.5,
+	imgMap:  ['bar1', 'bar2', 'bar3', 'seven', 'cherry'],
+	$imgMap: ['bar1', 'bar2', 'bar3', 'seven', 'cherry'],
+	rowMap: [-2, -1, 0, 1, 2],
+	player: {
+		money: 10
+	}
+};
+
+Resources(
+		'./img/BAR.png', 
+		'./img/2xBAR.png', 
+		'./img/3xBAR.png', 
+		'./img/7.png',
+		'./img/Cherry.png'
+	)
+	.onLoad(function(resources, names){
+		console.log('Dude, all resources have been loaded successfully!');
+
+		if(resources instanceof Array){
+			conf.imgMap.forEach((i, j) => conf.img[i] = resources[j]);
+		}
+
+		//add options to select
+		names.forEach(function(name, index){
+			let option = document.createElement('option');
+				option.value = index;
+				option.innerText = name.replace(new RegExp('^(./img/)|(.png|.jpg|.jpeg)$','ig'), '');
+			conf.what.appendChild(option);
+		});
+		
+		if (conf.canvas.getContext) {
+        	conf.context = conf.canvas.getContext('2d');
+        }
+		//instantiation the game
+		(function(ctx){
+
+			let fps = conf.fps,
+				interval = 1000 / fps,
+				delta,
+				lastpUpdate = 0,
+				slotGame = new Slot(ctx);
+
+			conf.spinBtn.onclick = slotGame.spin;
+			conf.balance.value = conf.player.money;
+
+			(function update(now){
+				delta = now - lastpUpdate;
+				if(delta > interval){
+					lastpUpdate = now - (delta % interval);
+					slotGame.update(now);
+				}
+				window.requestAnimationFrame(update);
+			})();
+
+		})(conf.context);
+	});
+</script>
+</body>
+</html>

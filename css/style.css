@@ -1,0 +1,23 @@
+#slot{
+	border: solid;
+	box-sizing: content-box;
+}
+
+.blink {
+  animation: blink 0.4s infinite alternate;
+  -webkit-animation: blink 0.4s infinite alternate;
+}
+@keyframes blink {
+  to {
+    background: green;
+  }
+}
+@-webkit-keyframes blink {
+  to {
+    background: green;
+  }
+}
+
+body{
+  background: black !important;
+}
