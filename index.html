@@ -37,10 +37,26 @@
 	</div>
 	<div class="row justify-content-center mb-3">
 		<div class="col col-auto">
-			<input class="btn w-auto" type="number" id="balance" min="1" max="5000">
-			<label for="balance" class="text-light mr-2"><i class="fas fa-dollar-sign green"></i></label>
-			<input class="btn w-auto" type="number" id="bet" min="1" value="1" max="3">
-			<label for="bet" class="text-light"><i class="fas fa-coins gold"></i></label>
+			<div class="input-group">
+			  	<div class="input-group-prepend">
+			    	<span class="input-group-text">Credits</span>
+				</div>
+				<input class="form-control" type="number" id="balance" min="1" max="5000">
+				<div class="input-group-append">
+			    	<span class="input-group-text"><i class="fas fa-dollar-sign green"></i></span>
+				</div>
+			</div>
+		</div>
+		<div class="col col-auto">
+			<div class="input-group">
+			  	<div class="input-group-prepend">
+			    	<span class="input-group-text">BETx</span>
+				</div>
+				<input class="form-control" type="number" id="bet" min="1" value="1" max="3">
+				<div class="input-group-append">
+			    	<span class="input-group-text"><i class="fas fa-coins gold"></i></span>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="row justify-content-center">
