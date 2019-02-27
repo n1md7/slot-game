@@ -28,3 +28,12 @@ body{
 .green{
   color: green;
 }
+
+.v-align{
+  vertical-align: inherit !important;
+}
+
+div.modal-footer, div.modal-body, div.modal-header{
+  background-color: #000000de;
+  color: white;
+}

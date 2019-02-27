@@ -61,8 +61,120 @@
 	<div class="row justify-content-center my-3">
 		<div class="col col-auto">
 			<button class="btn btn-warning w-auto" type="button" id="checkout"><i class="fas fa-money-bill-alt"></i> CHECKOUT</button>
+			<button class="btn btn-primary w-auto" type="button" data-toggle="modal" data-target="#payTable" ><i class="fas fa-money-bill-alt"></i> Pay Table</button>
 		</div>
 	</div>
+</div>
+
+<!-- Paytable modal -->
+<div class="modal fade" id="payTable" tabindex="-1" role="dialog" aria-labelledby="payTableTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="payTableTitle">Pay Table</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-dark">
+        	<thead>
+        		<tr>
+        			<td>Reel1</td>
+        			<td>Reel2</td>
+        			<td>Reel3</td>
+        			<td>TOP</td>
+        			<td>MIDDLE</td>
+        			<td>BOTTOM</td>
+        		</tr>
+        	</thead>
+        	<tbody>
+	        	<tr>
+	        		<td><img src="./img/Cherry.png" width="40"></td>
+	        		<td><img src="./img/Cherry.png" width="40"></td>
+	        		<td><img src="./img/Cherry.png" width="40"></td>
+	        		<td class="v-align">2000xBET</td>
+	        		<td class="v-align">1000xBET</td>
+	        		<td class="v-align">4000xBET</td>
+	        	</tr>
+	        	<tr>
+	        		<td><img src="./img/7.png" width="40"></td>
+	        		<td><img src="./img/7.png" width="40"></td>
+	        		<td><img src="./img/7.png" width="40"></td>
+	        		<td class="v-align">150xBET</td>
+	        		<td class="v-align">150xBET</td>
+	        		<td class="v-align">150xBET</td>
+	        	</tr>
+	        	<tr>
+	        		<td>
+	        			<img src="./img/7.png" width="40">
+	        			<img src="./img/Cherry.png" width="40">
+	        		</td>
+	        		<td>
+	        			<img src="./img/7.png" width="40">
+	        			<img src="./img/Cherry.png" width="40">
+	        		</td>
+	        		<td>
+	        			<img src="./img/7.png" width="40">
+	        			<img src="./img/Cherry.png" width="40">
+	        		</td>
+	        		<td class="v-align">75xBET</td>
+	        		<td class="v-align">75xBET</td>
+	        		<td class="v-align">75xBET</td>
+	        	</tr>
+	        	<tr>
+	        		<td><img src="./img/3xBAR.png" width="40"></td>
+	        		<td><img src="./img/3xBAR.png" width="40"></td>
+	        		<td><img src="./img/3xBAR.png" width="40"></td>
+	        		<td class="v-align">50xBET</td>
+	        		<td class="v-align">50xBET</td>
+	        		<td class="v-align">50xBET</td>
+	        	</tr>
+	        	<tr>
+	        		<td><img src="./img/2xBAR.png" width="40"></td>
+	        		<td><img src="./img/2xBAR.png" width="40"></td>
+	        		<td><img src="./img/2xBAR.png" width="40"></td>
+	        		<td class="v-align">20xBET</td>
+	        		<td class="v-align">20xBET</td>
+	        		<td class="v-align">20xBET</td>
+	        	</tr>
+	        	<tr>
+	        		<td><img src="./img/BAR.png" width="40"></td>
+	        		<td><img src="./img/BAR.png" width="40"></td>
+	        		<td><img src="./img/BAR.png" width="40"></td>
+	        		<td class="v-align">10xBET</td>
+	        		<td class="v-align">10xBET</td>
+	        		<td class="v-align">10xBET</td>
+	        	</tr>
+	        	<tr>
+	        		<td>
+	        			<img src="./img/BAR.png" width="40">
+	        			<img src="./img/2xBAR.png" width="40">
+	        			<img src="./img/3xBAR.png" width="40">
+	        		</td>
+	        		<td>
+	        			<img src="./img/BAR.png" width="40">
+	        			<img src="./img/2xBAR.png" width="40">
+	        			<img src="./img/3xBAR.png" width="40">
+	        		</td>
+	        		<td>
+	        			<img src="./img/BAR.png" width="40">
+	        			<img src="./img/2xBAR.png" width="40">
+	        			<img src="./img/3xBAR.png" width="40">
+	        		</td>
+	        		<td class="v-align">5xBET</td>
+	        		<td class="v-align">5xBET</td>
+	        		<td class="v-align">5xBET</td>
+	        	</tr>
+	        	 
+        	</tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 <script src="./js/reel.js"></script>
 <script src="./js/slot.js"></script>
@@ -162,5 +274,9 @@ Resources(
 		})(new Slot(conf.canvas.getContext('2d')));
 	});
 </script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" i></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>

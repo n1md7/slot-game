@@ -155,9 +155,9 @@ const Slot = function(canvas){
        			if(reelsStr.match(/(Cherry){3}/g)) sum.top += bet * 2000;
        			else if(reelsStr.match(/(7){3}/g)) sum.top += bet * 150;
        			else if(reelsStr.match(/(7|Cherry){3}/g)) sum.top += bet * 75;
-       			else if(reelsStr.match(/(3xBAR){3}/g)) {b = !0; sum.top += bet * 50;}
-       			else if(reelsStr.match(/(2xBAR){3}/g)) {b = !0; sum.top += bet * 20;}
-       			else if(reelsStr.match(/(BAR){3}/g)) {b = !0; sum.top += bet * 10;}
+       			else if(reelsStr.match(/(3xBAR){3}/g)) sum.top += bet * 50;
+       			else if(reelsStr.match(/(2xBAR){3}/g)) sum.top += bet * 20;
+       			else if(reelsStr.match(/(BAR){3}/g)) sum.top += bet * 10;
    				else if(reelsStr.match(/(BAR|2xBAR|3xBAR){3}/g)) sum.top += bet * 5;
        			if(sum.top !== 0 ){
        				highlightPts.push(0 + conf.reel.height / 2);
@@ -169,9 +169,9 @@ const Slot = function(canvas){
        			if(reelsStr.match(/(Cherry){3}/g)) sum.middle += bet * 1000;
        			else if(reelsStr.match(/(7){3}/g)) sum.middle += bet * 150;
        			else if(reelsStr.match(/(7|Cherry){3}/g)) sum.middle += bet * 75;
-       			else if(reelsStr.match(/(3xBAR){3}/g)) {b = !0; sum.middle += bet * 50;}
-       			else if(reelsStr.match(/(2xBAR){3}/g)) {b = !0; sum.middle += bet * 20;}
-       			else if(reelsStr.match(/(BAR){3}/g)) {b = !0; sum.middle += bet * 10;}
+       			else if(reelsStr.match(/(3xBAR){3}/g)) sum.middle += bet * 50;
+       			else if(reelsStr.match(/(2xBAR){3}/g)) sum.middle += bet * 20;
+       			else if(reelsStr.match(/(BAR){3}/g)) sum.middle += bet * 10;
    				else if(reelsStr.match(/(BAR|2xBAR|3xBAR){3}/g)) sum.middle += bet * 5;
        			if(sum.middle !== 0 ){
        				highlightPts.push(60 + conf.reel.height / 2);
@@ -182,9 +182,9 @@ const Slot = function(canvas){
        			if(reelsStr.match(/(Cherry){3}/g)) sum.bottom += bet * 4000;
        			else if(reelsStr.match(/(7){3}/g)) sum.bottom += bet * 150;
        			else if(reelsStr.match(/(7|Cherry){3}/g)) sum.bottom += bet * 75;
-       			else if(reelsStr.match(/(3xBAR){3}/g)) {b = !0; sum.bottom += bet * 50;}
-       			else if(reelsStr.match(/(2xBAR){3}/g)) {b = !0; sum.bottom += bet * 20;}
-       			else if(reelsStr.match(/(BAR){3}/g)) {b = !0; sum.bottom += bet * 10;}
+       			else if(reelsStr.match(/(3xBAR){3}/g)) sum.bottom += bet * 50;
+       			else if(reelsStr.match(/(2xBAR){3}/g)) sum.bottom += bet * 20;
+       			else if(reelsStr.match(/(BAR){3}/g)) sum.bottom += bet * 10;
    				else if(reelsStr.match(/(BAR|2xBAR|3xBAR){3}/g)) sum.bottom += bet * 5;
        			if(sum.bottom !== 0 ){
        				highlightPts.push(120 + conf.reel.height / 2);
