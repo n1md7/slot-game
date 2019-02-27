@@ -25,6 +25,7 @@ const Slot = function(canvas){
 	};
 
 	this.spin = function(){
+		conf.win.value = 0;
 		conf.sound.spin.play();
 		if(conf.player.money - conf.bet.value*1 < 0){
 			conf.sound.spin.currentTime = 0;
