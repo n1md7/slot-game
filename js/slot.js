@@ -1,153 +1,232 @@
-let Slot = function(canvas){
+const Slot = function(canvas){
 
-	let reels = [
-			new Reel(canvas, conf.reel.xOffsets[0]),
-			new Reel(canvas, conf.reel.xOffsets[1]),
-			new Reel(canvas, conf.reel.xOffsets[2])
-		];
+	this.canvas = canvas;
+	let auto = false;
+	let reels = [...range(1,3)]
+		.map(i => new Reel(canvas, conf.reel.xOffsets[i-1]));
 
-	let lastTime = [0, 0, 0];
-	let time = 0;
-	let initDone = Array(3).fill(!!0);
-	let spin = Array(3).fill(!!0);
-	let checkDone = !0;
-	let reelsStates = [0,0,0];
-	let winPoints = 0;
+	let delta = 0;
+	let currentSpin = [];
 
-	let check = function(){
-		if(!checkDone ){
-			checkDone = !checkDone;
-			let dataMap = reels.map(reel=>{
-				return reel.reelRowMap
-						.sort(function(next, current){
-							if(next.offsetY>current.offsetY) return  1;
-							if(next.offsetY<current.offsetY) return -1; 
-								return 0;
-					}).slice(2);
-			});
-			winData = [];
-			dataMap[0].forEach(function(cell, i){
-				let barWin = false;
-				//aligned cells
-				if(cell.offsetY === dataMap[1][i].offsetY && dataMap[1][i].offsetY === dataMap[2][i].offsetY){
-					//cherry
-					if(cell.key === conf.$imgMap[4] && 
-						dataMap[1][i].key === dataMap[2][i].key &&
-						dataMap[1][i].key === conf.$imgMap[4]){
-							winPoints += 1000;
-							if(i === 0) winPoints *= 2;
-							if(i === 2) winPoints *= 4;
-							winData.push({i:i,o:cell.offsetY});
-					}
-					//seven
-					if(cell.key === conf.$imgMap[3] && 
-						dataMap[1][i].key === dataMap[2][i].key &&
-						dataMap[1][i].key === conf.$imgMap[3]){
-							winPoints += 150;
-							winData.push({i:i,o:cell.offsetY});
-					}
-					//bar3
-					if(cell.key === conf.$imgMap[2] && 
-						dataMap[1][i].key === dataMap[2][i].key &&
-						dataMap[1][i].key === conf.$imgMap[2]){
-							winPoints += 50;
-							barWin = true;
-							winData.push({i:i,o:cell.offsetY});
-					}
-					//bar2
-					if(cell.key === conf.$imgMap[1] && 
-						dataMap[1][i].key === dataMap[2][i].key &&
-						dataMap[1][i].key === conf.$imgMap[1]){
-							winPoints += 20;
-							barWin = true;
-							winData.push({i:i,o:cell.offsetY});
-					}
-					//bar1
-					if(cell.key === conf.$imgMap[0] && 
-						dataMap[1][i].key === dataMap[2][i].key &&
-						dataMap[1][i].key === conf.$imgMap[0]){
-							winPoints += 10;
-							barWin = true;
-							winData.push({i:i,o:cell.offsetY});
-					}
-					//any bar combination
-					let bars = Array(3).fill(1).map((x,i)=>x=conf.$imgMap[i]);
-					if(!barWin && bars.includes(cell.key) && 
-						bars.includes(dataMap[1][i].key) &&
-						bars.includes(dataMap[2][i].key)){
-							winPoints += 5;
-							winData.push({i:i,o:cell.offsetY});
-					}
-				}
-			});
-
-			//heightlight winner row
-			let margin = 10;
-			winData.forEach(i => {
-				canvas.beginPath();
-				canvas.moveTo(margin, i.o-2+conf.reel.height/2);
-				canvas.lineTo(conf.width - margin, i.o-2+conf.reel.height/2);
-				canvas.strokeStyle = "#FF0000";
-				canvas.stroke();
-			});
-			conf.player.money += winPoints;
+	this.checkout = function(){
+		if(confirm('Are you sure? We can keep your money better!')){
+			conf.player.money = 0;
 			conf.balance.value = conf.player.money;
-			if(winPoints!==0){
-				conf.balance.classList.add('blink');
-				console.log('winPoint', winPoints);
-			}
-			winPoints = 0;
+        	conf.win.classList.remove('blink');
+        	auto = false;
+			alert('Your operation has been made successfully');
 		}
-	}
+	};
+
+	this.setCredits = function(){
+		conf.player.money = conf.balance.value;
+
+		return this;
+	};
 
 	this.spin = function(){
-		conf.player.money = conf.balance.value || 10;
-		if(conf.player.money <= 0){
-			alert('You are out of money! Get it and come back later!');
-
+		conf.sound.spin.play();
+		if(conf.player.money - conf.bet.value*1 < 0){
+			conf.sound.spin.currentTime = 0;
+			conf.sound.spin.pause();
+			alert('You dont have enough credits!');
+			auto = false;
+			
 			return;
 		}
-		conf.player.money -= 1;
-		conf.balance.value = conf.player.money; 
-		lastTime = Array(3).fill(time);
-		spin = Array(3).fill(!0);
-
-		conf.balance.classList.remove('blink');
-		conf.spinBtn.setAttribute('disabled', '');
-
-		return this;
-	};
-	this.update = function(now){
-		[0,1,2].forEach(function(reel){
-			let delta = now - lastTime[reel];
-			//to draw init boxes
-			if(!initDone[reel]){
-				initDone[reel] = !initDone[reel];
-				reels[reel].resume().animate(0).stop();
-			}
-			//spin it again
-			if(spin[reel]){
-				reels[reel].resume();
-				spin[reel] = !spin[reel];
-				checkDone = false;
-			}
-			//stop reels according their animTime
-			if(delta >= conf.reel.animation[reel] && !reels[reel].$stop){
-				lastTime[reel] = now;
-				reels[reel].stop();
-			}
-			reelsStates[reel] = reels[reel].$stop;
-			reels[reel].animate();
+		conf.player.money -= conf.bet.value*1;
+		conf.balance.value = conf.player.money;
+		currentSpin = [];
+		reels.forEach(reel => {
+			reel.clicked = true;
+			reel.finalAnimation = false;
+			reel.finalShapes = reel.setFinalShapes();
+			currentSpin.push(reel.finalShapes);
 		});
-		
-		if(reelsStates.filter(x=>x===true).length===3){
-			check.call(this);
-			conf.spinBtn.removeAttribute('disabled');
-		}
+		conf.spinBtn.setAttribute('disabled', 'disabled');
+		conf.what.setAttribute('disabled', 'disabled');
+		conf.where.setAttribute('disabled', 'disabled');
+		conf.bet.setAttribute('disabled', 'disabled');
+		conf.balance.setAttribute('disabled', 'disabled');
+		conf.mode.setAttribute('disabled', 'disabled');
+		conf.checkout.setAttribute('disabled', 'disabled');
+        conf.win.classList.remove('blink');
+	};
 
-		time = now;
+	this.setMode = function(){
+		reels.forEach(reel => {
+			reel.mode = conf.mode.value;
+			reel.fixedPlace = conf.where.value;
+			reel.fixedImg = conf.what.value;
+		});
+	};
 
+	this.loop = function( now ){
+		reels.forEach((reel, i)=> {
+			this.drawStopPoints();
+			//init spin animation
+			reel.spinAnimation();
+			reel.spin2point();
+
+			if(reel.clicked){
+				reel.clicked = false;
+				reel.clickTime = now;
+				reel.spinning = true;
+			}
+
+			delta = now - reel.clickTime;
+			if(delta > conf.reel.animTimes[i] && reel.spinning){
+				reel.finalAnimation = true;
+				reel.spinning = false;
+
+				if(i === 2){
+					conf.spinBtn.removeAttribute('disabled');
+					conf.what.removeAttribute('disabled');
+					conf.where.removeAttribute('disabled');
+					conf.bet.removeAttribute('disabled');
+					conf.balance.removeAttribute('disabled');
+					conf.mode.removeAttribute('disabled');
+					conf.checkout.removeAttribute('disabled');
+					reel.done(() =>{
+						//reset sound and stop
+						conf.sound.spin.currentTime = 0;
+						conf.sound.spin.pause();
+						let won = check(currentSpin);
+						if(auto){
+							setTimeout(function(){
+								conf.spinBtn.click();
+							}, won?conf.autoModeDelay: 300);
+						}
+					});
+				}
+			}
+		});
+	};
+
+	this.start = function(){
+		conf.sound.win.volume = 1.0;
+		conf.sound.spin.volume = 0.03;
+		reels.forEach(reel => {
+			reel.clicked = true;
+			reel.finalAnimation = false;
+			reel.finalShapes = reel.setFinalShapes();
+		});
+		reels.forEach((reel, i)=> {
+			reel.clicked = false;
+			reel.finalAnimation = true;
+			reel.spinning = false;
+		});
 		return this;
 	};
 
+	this.drawStopPoints = function(){
+		this.canvas.strokeStyle  = '#121212';
+		[60,120,180].forEach(x => {
+			this.canvas.strokeRect(0, x-2, 5, 0);
+			this.canvas.strokeRect(conf.width-5, x-2, 5, 0);
+		});
+	};
+
+	let check = function(reels) {
+       	if(reels[0][0].stop !== reels[1][0].stop || reels[1][0].stop !== reels[2][0].stop){
+       		//no win
+       		return;
+       	}
+
+       	let sum = {
+       		top: 0,
+       		middle: 0,
+       		bottom: 0
+       	};
+
+       	//coefficient - custom added.
+       	let bet = conf.bet.value * 1;
+
+       	let highlightPts = [];
+       	//all reels are aligned in one line
+       	for(let r = 0; r < reels.length; r ++){
+       		let reel1 = reels[0][r],
+       			reel2 = reels[1][r],
+       			reel3 = reels[2][r];
+       		let reelsStr = reel1.key + reel2.key + reel3.key;
+       		//top line
+       		if(reel1.stop === 0){
+       			let b = !!0;
+       			if(reelsStr.match(/(Cherry){3}/g)) sum.top += bet * 2000;
+       			if(reelsStr.match(/(7){3}/g)) sum.top += bet * 150;
+       			if(reelsStr.match(/(7|Cherry){3}/g)) sum.top += bet * 75;
+       			if(reelsStr.match(/(3xBAR){3}/g)) {b = !0; sum.top += bet * 50;}
+       			if(reelsStr.match(/(2xBAR){3}/g)) {b = !0; sum.top += bet * 20;}
+       			if(reelsStr.match(/(BAR){3}/g)) {b = !0; sum.top += bet * 10;}
+       			if(!b)
+       				if(reelsStr.match(/(BAR|2xBAR|3xBAR){3}/g)) sum.top += bet * 5;
+       			if(sum.top !== 0 ){
+       				highlightPts.push(0 + conf.reel.height / 2);
+       			}
+
+       		}
+       		//middle line
+       		if(reel1.stop === 60){
+       			let b = !!0;
+       			if(reelsStr.match(/(Cherry){3}/g)) sum.middle += bet * 1000;
+       			if(reelsStr.match(/(7){3}/g)) sum.middle += bet * 150;
+       			if(reelsStr.match(/(7|Cherry){3}/g)) sum.middle += bet * 75;
+       			if(reelsStr.match(/(3xBAR){3}/g)) {b = !0; sum.middle += bet * 50;}
+       			if(reelsStr.match(/(2xBAR){3}/g)) {b = !0; sum.middle += bet * 20;}
+       			if(reelsStr.match(/(BAR){3}/g)) {b = !0; sum.middle += bet * 10;}
+       			if(!b)
+       				if(reelsStr.match(/(BAR|2xBAR|3xBAR){3}/g)) sum.middle += bet * 5;
+       			if(sum.middle !== 0 ){
+       				highlightPts.push(60 + conf.reel.height / 2);
+       			}
+       		}
+       		//bottom line
+       		if(reel1.stop === 120){
+       			let b = !!0;
+       			if(reelsStr.match(/(Cherry){3}/g)) sum.bottom += bet * 4000;
+       			if(reelsStr.match(/(7){3}/g)) sum.bottom += bet * 150;
+       			if(reelsStr.match(/(7|Cherry){3}/g)) sum.bottom += bet * 75;
+       			if(reelsStr.match(/(3xBAR){3}/g)) {b = !0; sum.bottom += bet * 50;}
+       			if(reelsStr.match(/(2xBAR){3}/g)) {b = !0; sum.bottom += bet * 20;}
+       			if(reelsStr.match(/(BAR){3}/g)) {b = !0; sum.bottom += bet * 10;}
+       			if(!b)
+       				if(reelsStr.match(/(BAR|2xBAR|3xBAR){3}/g)) sum.bottom += bet * 5;
+       			if(sum.bottom !== 0 ){
+       				highlightPts.push(120 + conf.reel.height / 2);
+       			}
+       		}
+       	}
+
+   		//heightlight winner row
+        let margin = 10;
+        highlightPts.forEach(i => {
+            canvas.beginPath();
+            canvas.moveTo(margin, i - 2);
+            canvas.lineTo(conf.width - margin, i - 2);
+            canvas.strokeStyle = "#FF0000";
+            canvas.stroke();
+        });
+
+        let totalSum = sum.top + sum.middle + sum.bottom;
+        conf.player.money += totalSum;
+        conf.balance.value = conf.player.money;
+        if (totalSum !== 0) {
+        	conf.sound.win.play();
+            conf.win.classList.add('blink');
+            conf.win.value = totalSum;
+            console.log(sum)
+            return true;
+        }
+        return false;
+    };
+
+	this.autoToggle = function(){
+		auto = !auto;
+		let mode = auto === true?'ON': 'OFF';
+		conf.autoBtn.innerHTML = conf.autoBtn.innerHTML.replace(/ON|OFF/g, mode);
+
+		conf.spinBtn.click();
+	};
 };
+
+

@@ -22,6 +22,15 @@ Number.prototype.randTo = function(max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+/**
+* Create sequence generator from to
+*/
+
+function* range(start, end) {
+    for (let i = start; i <= end; i++) {
+        yield i;
+    }
+}
 
 /**
  * Array prototype Empty
@@ -43,4 +52,19 @@ Array.prototype.closest = function(num){
         val: currVal,
         index: currIndex
     };
+};
+
+/*element selector*/
+let find = function(e){
+    switch(true){
+        case typeof e === "string":
+            return document.querySelector(e);
+        default:
+            return e;
+    }
+};
+
+//get random element
+Array.prototype.rnd = function () {
+    return this[Math.floor(Math.random() * this.length)];
 };

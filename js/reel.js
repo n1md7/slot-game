@@ -1,64 +1,185 @@
-let Reel = function(canvas, offsetX = 0, offsetY = 0){
-	this.canvas = canvas;
-	this.reelRowMap = [];
+const Reel = function(canvas, offsetX = 0){
 	
-	this.$stop = true;
-
-	//init start positions
-	conf.imgMap.shuffle()
-		.forEach((key, i) => this.reelRowMap.push({
-			offsetY: conf.reel.height * conf.rowMap[i],
-			key: key
-	}));
-
-	this.stop = function(){
-		this.$stop = true;
-
-		return this;
+	//generate img objects for a reel
+	this.reelMap = conf.imgMap.shuffle()
+		.map((text, index) => ({
+			offsetY: conf.reel.height * conf.imgStartPts[index],
+			key: text 
+		})
+	);
+	this.fnc = null;
+	this.spinning = false;
+	this.finalAnimation = false;
+	this.clickTime = 0;
+	this.showedLastAnim = false;
+	this.clicked = false;
+	this.mode = 'random';
+	this.fixedPlace = 'top';
+	this.fixedImg = 'BAR';
+	this.finalShapes = [];
+	//clear whole reel
+	const clear = function(){
+		canvas.clearRect(
+				offsetX, 
+				conf.height, 
+				conf.reel.width, 
+				conf.height
+			);
 	};
 
-	this.resume = function(){
-		this.$stop = false;
-
-		return this;
-	};
-
-	this.clear = function(){
-		this.canvas.clearRect(offsetX, conf.height, conf.reel.width, conf.height);
-
-		return this;
-	};
-
-	this.draw = function(key = 'bar1', offsetY = 0){
+	//draw image to specific point 
+	const draw = function(key = 'BAR', offsetY = 0, blur = 0){
 		if(conf.img.hasOwnProperty(key)){
-			this.clear();
-			this.canvas.strokeStyle = '#000';
-			this.canvas.lineWidth = 4;         
-			this.canvas.fillRect(offsetX, offsetY, conf.reel.width, conf.reel.height);
-			this.canvas.strokeRect(offsetX, offsetY, conf.reel.width, conf.reel.height);
-			this.canvas.drawImage(conf.img[key], offsetX, offsetY);
-		}
+			clear();
 
-		return this;
+			canvas.strokeStyle = '#000';
+			canvas.filter = `blur(${blur}px)`;
+			canvas.lineWidth = 4;         
+			canvas.fillRect(offsetX, offsetY, conf.reel.width, conf.reel.height);
+			canvas.strokeRect(offsetX, offsetY, conf.reel.width, conf.reel.height);
+			canvas.drawImage(conf.img[key], offsetX, offsetY);
+			canvas.filter = 'none';
+		}
 	};
 
-	this.animate = function(i = 1){
-		if(this.$stop) return;
+	this.spinAnimation = function(skip){
+		if(!this.spinning) return;
 
-		for(let j = 0; j < this.reelRowMap.length; j ++){
-			let $reel = this.reelRowMap[j];
+		this.reelMap.forEach(img => {
 
-			$reel.offsetY += i * conf.pSkip;
+			img.offsetY += conf.pSkip;
 
-			//reset post and jump very top
-			if($reel.offsetY >= conf.height){
-				$reel.offsetY = conf.reel.height * -2;
+			//reset prev and jump very top
+			if(img.offsetY >= conf.height){
+				img.offsetY = conf.reel.height * -3;
 			}
 
-			this.draw($reel.key, $reel.offsetY);
-		}
-		
-		return this;
+			//draw img object
+			draw(img.key, img.offsetY, 4);
+		});
 	};
+
+	this.generateReelShapesFixed = function(){
+		let imgMp = conf.imgMap.filter(x => x !== this.fixedImg);
+		let rndImg2 = imgMp.rnd();
+			imgMp.splice(imgMp.indexOf(rndImg2), 1);
+		let rndImg3 = imgMp.rnd();
+		switch(this.fixedPlace){
+			case 'top':
+				return [
+					{
+						offsetY: -60,
+						key: this.fixedImg,
+						stop: 0
+					},{
+						offsetY: 60,
+						key: rndImg2,
+						stop: 120
+					},{
+						offsetY: 180,
+						key: rndImg3,
+						stop: 240
+					}
+				];
+			case 'middle':
+				return [
+					{
+						offsetY: -120,
+						key: rndImg2,
+						stop: -60
+					},{
+						offsetY: 0,
+						key: this.fixedImg,
+						stop: 60
+					},{
+						offsetY: 120,
+						key: rndImg3,
+						stop: 180
+					}
+				];
+			default:
+				return [
+					{
+						offsetY: -180,
+						key: rndImg2,
+						stop: -120
+					},{
+						offsetY: -60,
+						key: rndImg3,
+						stop: 0
+					},{
+						offsetY: 60,
+						key: this.fixedImg,
+						stop: 120
+					}
+				];
+		}
+	};
+
+	this.generateReelShapesRandom = function(){
+		let imgMp = conf.imgMap.map(x=>x);
+		let rndImg1 = imgMp.rnd();
+			imgMp.splice(imgMp.indexOf(rndImg1), 1);
+		let rndImg2 = imgMp.rnd();
+			imgMp.splice(imgMp.indexOf(rndImg2), 1);
+		let rndImg3 = imgMp.rnd();
+
+		let rnd = [0, 60].rnd();
+		return [
+					{
+						offsetY: -120 + rnd,
+						key: rndImg1,
+						stop: -60 + rnd
+					},{
+						offsetY: 0 + rnd,
+						key: rndImg2,
+						stop: 60 + rnd
+					},{
+						offsetY: 120 + rnd,
+						key: rndImg3,
+						stop: 180 + rnd
+					}
+				];
+	};
+
+	this.setFinalShapes = function(){
+		switch(this.mode){
+			case 'fixed':
+				return this.generateReelShapesFixed();
+			break;
+			default:
+				return this.generateReelShapesRandom();
+		}
+	};
+
+	this.spin2point = function(){
+		if(!this.finalAnimation){
+			if(typeof this.fnc === 'function'){
+				this.fnc();
+				this.fnc = null;
+			}
+
+			return;
+		}
+
+		let stopPt;
+		this.finalShapes.forEach(img => {
+			if(img.hasOwnProperty('stop')){
+				stopPt = img.stop;
+			}
+			let inx = 6;
+			if(img.offsetY + inx === stopPt) {
+				this.finalAnimation = false;
+			}
+			img.offsetY += inx;
+
+			//draw img object
+			draw(img.key, img.offsetY);
+		});
+	};
+
+	this.done = function(fn){
+		this.fnc = fn;
+	}
 
 };

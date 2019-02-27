@@ -9,15 +9,22 @@
 }
 @keyframes blink {
   to {
-    background: green;
+    background: #c3ad00;
   }
 }
 @-webkit-keyframes blink {
   to {
-    background: green;
+    background: #c3ad00;
   }
 }
 
 body{
   background: black !important;
+}
+
+.gold{
+  color: gold !important;
+}
+.green{
+  color: green;
 }

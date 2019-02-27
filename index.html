@@ -7,69 +7,101 @@
 	<script src="./js/helpers.js"></script>
 	<script src="./js/resource.loader.js"></script>
 	<link rel="stylesheet" type="text/css" href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
 	<link rel="stylesheet" type="text/css" href="./css/style.css">
 </head>
 <body>
 <div class="container">
-	<h2 class="text-center text-light">Slot Game</h2>
-	<div class="row justify-content-center">
+	<h2 class="text-center text-light my-3 gold"><i class="fab fa-phoenix-framework gold"></i> Slot Game</h2>
+	<div class="row justify-content-center mb-3">
 		<div class="col col-auto">
-			<canvas id="slot" width="423" height="363"></canvas>
+			<canvas id="slot" width="440" height="240"></canvas>
 		</div>
 	</div>
 	<div class="row justify-content-center mb-3">
 		<div class="col col-auto">
-			<button class="btn btn-primary px-5" id="spin">Spin</button>
-			<label for="balance" class="text-light">Money:</label>
-			<input class="btn" type="number" id="balance" min="1" max="5000">
+			<div class="input-group mb-3 w-50 m-auto">
+			  	<div class="input-group-prepend">
+			    	<span class="input-group-text">WIN</span>
+				</div>
+				<input type="text" class="form-control w-auto" id="cwin" value="0">
+			</div>
+		</div>
+	</div>
+	<div class="row justify-content-center mb-3">
+		<div class="col col-auto">
+			<button class="btn btn-danger px-5" id="spin"><i class="fas fa-sync-alt"></i> SPIN</button>
+			<button class="btn btn-secondary px-5" id="auto"><i class="fab fa-android"></i> AUTO (OFF)</button>
+		</div>
+	</div>
+	<div class="row justify-content-center mb-3">
+		<div class="col col-auto">
+			<input class="btn w-auto" type="number" id="balance" min="1" max="5000">
+			<label for="balance" class="text-light mr-2"><i class="fas fa-dollar-sign green"></i></label>
+			<input class="btn w-auto" type="number" id="bet" min="1" value="1" max="3">
+			<label for="bet" class="text-light"><i class="fas fa-coins gold"></i></label>
 		</div>
 	</div>
 	<div class="row justify-content-center">
 		<div class="col col-auto">
 			<select id="mode" class="btn btn-default">
-				<option value="1">Random</option>
-				<option value="0">Fixed</option>
+				<option value="random">Random</option>
+				<option value="fixed">Fixed</option>
 			</select>
 			<select id="where" class="btn btn-default">
-				<option value="0">top</option>
-				<option value="1">middle</option>
-				<option value="2">bottom</option>
+				<option value="top">top</option>
+				<option value="middle">middle</option>
+				<option value="bottom">bottom</option>
 			</select>
 			<select id="what" class="btn btn-default">
 			</select>
-			
 		</div>
 	</div>	
+	<div class="row justify-content-center my-3">
+		<div class="col col-auto">
+			<button class="btn btn-warning w-auto" type="button" id="checkout"><i class="fas fa-money-bill-alt"></i> CHECKOUT</button>
+		</div>
+	</div>
 </div>
 <script src="./js/reel.js"></script>
 <script src="./js/slot.js"></script>
 <script type="text/javascript">
 let conf = {
-	fps: 46,//60,
+	fps: 60,
 	img: [],
-	width: 423,
-	height: 363,
-	canvas: document.getElementById('slot'),
-	spinBtn: document.getElementById('spin'),
-	mode: document.getElementById('mode'),
-	where: document.getElementById('where'),
-	what: document.getElementById('what'),
-	balance: document.getElementById('balance'),
+	width: 420 + 20,
+	height: 240,
+	canvas: find('#slot'),
+	spinBtn: find('#spin'),
+	autoBtn: find('#auto'),
+	mode: find('#mode'),
+	where: find('#where'),
+	what: find('#what'),
+	balance: find('#balance'),
+	bet: find('#bet'),
+	win: find('#cwin'),
+	checkout: find('#checkout'),
 	reel: {
-		width: 141,
-		height: 121,
-		xOffsets: [0, 141, 282],
-		animation: [2000, 2500, 3000].map(x => x*1)
+		width: 140,
+		height: 120,
+		xOffsets: [0, 140, 280].map(x => x + 10),
+		animTimes: [20, 25, 30].map(x => x * 100)
 	},
-	pSkip: 60.5,
-	imgMap:  ['bar1', 'bar2', 'bar3', 'seven', 'cherry'],
-	$imgMap: ['bar1', 'bar2', 'bar3', 'seven', 'cherry'],
-	rowMap: [-2, -1, 0, 1, 2],
+	pSkip: 40,
+	imgMap:  ['BAR', '2xBAR', '3xBAR', '7', 'Cherry'],
+	imgStartPts: [...range(-2, 2)],
 	player: {
 		money: 10
+	},
+	imgDot: null,
+	autoModeDelay: 3000,
+	sound: {
+		win: new Audio('./sound/win.mp3'),
+		spin: new Audio('./sound/spin.mp3')
 	}
 };
 
+//Resource loader
 Resources(
 		'./img/BAR.png', 
 		'./img/2xBAR.png', 
@@ -78,45 +110,55 @@ Resources(
 		'./img/Cherry.png'
 	)
 	.onLoad(function(resources, names){
-		console.log('Dude, all resources have been loaded successfully!');
-
+		//loading done and ready to go
+		//save loaded resources to conf.img 
 		if(resources instanceof Array){
 			conf.imgMap.forEach((i, j) => conf.img[i] = resources[j]);
 		}
-
 		//add options to select
-		names.forEach(function(name, index){
-			let option = document.createElement('option');
-				option.value = index;
-				option.innerText = name.replace(new RegExp('^(./img/)|(.png|.jpg|.jpeg)$','ig'), '');
+		names.forEach(function(name){
+			let key = name.replace(new RegExp('^(./img/)|(.png|.jpg|.jpeg)$','ig'), ''),
+				option = document.createElement('option');
+				option.value = key;
+				option.innerText = key;
 			conf.what.appendChild(option);
 		});
 		
-		if (conf.canvas.getContext) {
-        	conf.context = conf.canvas.getContext('2d');
-        }
+		//sounds load
+		conf.sound.win.load();
+		conf.sound.spin.load();
+
 		//instantiation the game
-		(function(ctx){
+		(function(slot){
 
 			let fps = conf.fps,
 				interval = 1000 / fps,
 				delta,
-				lastpUpdate = 0,
-				slotGame = new Slot(ctx);
+				lastpUpdate = 0;
 
-			conf.spinBtn.onclick = slotGame.spin;
+			//bind click events
+			conf.spinBtn.onclick = slot.spin;
+			conf.checkout.onclick = slot.checkout;
+			conf.mode.onchange = slot.setMode;
+			conf.where.onchange = slot.setMode;
+			conf.what.onchange = slot.setMode;
+			conf.balance.onchange = slot.setCredits;
 			conf.balance.value = conf.player.money;
+			conf.autoBtn.onclick = slot.autoToggle;
 
+			//init game
+			slot.start();
+			//core function of the game
 			(function update(now){
 				delta = now - lastpUpdate;
 				if(delta > interval){
 					lastpUpdate = now - (delta % interval);
-					slotGame.update(now);
+					slot.loop(now);
 				}
 				window.requestAnimationFrame(update);
 			})();
 
-		})(conf.context);
+		})(new Slot(conf.canvas.getContext('2d')));
 	});
 </script>
 </body>
