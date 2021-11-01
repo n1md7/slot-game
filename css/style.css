@@ -1,6 +1,6 @@
-#slot{
-	border: solid;
-	box-sizing: content-box;
+#slot {
+  border: solid;
+  box-sizing: content-box;
 }
 
 .blink {
@@ -18,22 +18,24 @@
   }
 }
 
-body{
+body {
   background: black !important;
 }
 
-.gold{
+.gold {
   color: gold !important;
 }
-.green{
+.green {
   color: green;
 }
 
-.v-align{
+.v-align {
   vertical-align: inherit !important;
 }
 
-div.modal-footer, div.modal-body, div.modal-header{
+div.modal-footer,
+div.modal-body,
+div.modal-header {
   background-color: #000000de;
   color: white;
 }

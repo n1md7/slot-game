@@ -1,0 +1,28 @@
+{
+  "name": "slot-game",
+  "version": "1.0.0",
+  "description": "Javascript 3x3 slot game",
+  "scripts": {
+    "format:code": "npx prettier --write .",
+    "format:check": "npx prettier --check .",
+    "serve": "npx http-server ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n1md7/slot-game.git"
+  },
+  "keywords": [
+    "slot",
+    "game"
+  ],
+  "author": "Harry Kodua",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/n1md7/slot-game/issues"
+  },
+  "homepage": "https://github.com/n1md7/slot-game#readme",
+  "devDependencies": {
+    "http-server": "^14.0.0",
+    "prettier": "2.4.1"
+  }
+}
