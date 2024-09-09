@@ -1,19 +1,22 @@
 import { Group } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
 import { Canvas } from './canvas.mjs';
 import { Modes } from './mode.mjs';
+import { IgnoreStartSymbolCount } from './constants.js';
 
 /**
  * import { ReelSymbols, ColorOptions, BlockOptions, PaddingOptions, BlockType, Group, Tween, Easing, Mode } from './types.mjs';
  */
 
 /**
- * @description Slot Reel
+ * Slot Reel class. It's responsible for drawing and animating the slot reel
+ *
  * @param {Object} options - Reel options
  * @param {Mode} options.mode - Slot mode
  * @param {number} options.height - Reel height
  * @param {CanvasRenderingContext2D } options.ctx - Canvas rendering context
  * @param {number} options.index - Reel index, 0, 1, 2 required for the X offset calculation
  * @param {number} options.animationTime - Reel animation time in milliseconds
+ * @param {number} options.rows - Slot reels rows
  * @param {ColorOptions} options.color - Reel colors
  * @param {BlockOptions} options.block - Reel block options
  * @param {PaddingOptions} options.padding - Reel block padding
@@ -29,16 +32,16 @@ export function Reel(options) {
   this.options = options;
 
   /**
-   * @private
-   * @readonly
-   */
-  this.mode = options.mode;
-
-  /**
    * @redonly
    * @private
    */
-  this.modes = new Modes(this);
+  this.modes = new Modes(this, options.mode);
+
+  /**
+   * @private
+   * @readonly
+   */
+  this.mode = this.modes.getCurrent();
 
   /**
    * @private
@@ -68,15 +71,16 @@ export function Reel(options) {
   this.symbolKeys = Object.keys(options.symbols);
 
   /**
+   * Animation blocks size.
+   *
    * @public
    * @readonly
-   * @description Animation blocks size. It will be 6 for 1st reel, 7 for 2nd, and 8 for the 3rd, etc.
    * @type {number}
    */
-  this.animationBlockslength = 6 + options.index;
+  this.animationBlockslength = 2 * options.rows + options.index + IgnoreStartSymbolCount;
 
   /**
-   * @private
+   * @public
    * @type {BlockType[]}
    */
   this.animationBlocks = [];
@@ -99,23 +103,20 @@ export function Reel(options) {
   };
 
   /**
+   * Reset the reel to the initial state
+   *
    * @public
    * @readonly
-   * @description Reset the reel to the initial state
    */
   this.reset = () => {
-    const mode = this.modes[this.mode];
-    if (!mode) {
-      throw new Error(`Mode ${this.mode} is not defined`);
-    }
-
-    mode.generateReelSymbols();
+    this.mode.getReelSymbols();
     this.drawBlocks();
   };
 
   /**
+   * Update the reel, this method is called on each frame
+   *
    * @public
-   * @description Update loop
    * @param {DOMHighResTimeStamp} time
    */
   this.update = (time) => {
@@ -129,7 +130,6 @@ export function Reel(options) {
   /**
    * @public
    * @readonly
-   * @description Spin the reel
    * @returns {void}
    */
   this.spin = () => {

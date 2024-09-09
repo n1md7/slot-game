@@ -40,7 +40,8 @@
 
 /**
  * @typedef {Object} ReelOptions - Slot reel options
- * @property {number} count - Slot reels count
+ * @property {number} rows - Slot reels rows
+ * @property {number} cols - Slot reels columns
  * @property {number} animationTime - Slot reels animation time in milliseconds
  * @property {PaddingOptions} padding - Slot padding
  */
@@ -109,7 +110,7 @@
  * @param {Object} options - Mode options
  * @param {Reel} options.reel - Reel instance
  *
- * @method generateReelSymbols - Generate reel symbols
+ * @method getReelSymbols - Generate reel symbols
  * @returns {void}
  *
  * @constructor

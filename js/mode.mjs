@@ -1,5 +1,6 @@
 import { Easing, Tween } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
 import { createEmptyArray } from './utils.mjs';
+import { IgnoreStartSymbolCount } from './constants.js';
 
 /**
  * import { Reel, ModeStrategy } from './reel.mjs';
@@ -33,14 +34,17 @@ export function RandomMode(reel) {
    * @readonly
    * @returns {void}
    */
-  this.generateReelSymbols = () => {
+  this.getReelSymbols = () => {
     reel.animations.removeAll(); // Reset old animations if any
 
-    const visibleBlocks = 2;
-    // Calculated to Y position to start the animation, 1st block is partially visible or not visible at all
-    const startY = Math.abs((visibleBlocks + 1 - reel.animationBlockslength) * reel.options.block.height);
+    const visibleBlocks = reel.options.rows;
+    // Calculated to Y position to start the animation
+    const startY = Math.abs(
+      (visibleBlocks + IgnoreStartSymbolCount - reel.animationBlockslength) * reel.options.block.height,
+    );
 
-    reel.animationBlocks = createEmptyArray(reel.animationBlockslength).map((index) => {
+    const prevSymbols = reel.animationBlocks;
+    const nextSymbols = createEmptyArray(reel.animationBlockslength).map((index) => {
       const coords = { yOffset: (index - reel.animationBlockslength + visibleBlocks) * reel.options.block.height };
       const symbol = this.getRandomSymbol();
       const isFirst = index === 0;
@@ -64,8 +68,25 @@ export function RandomMode(reel) {
 
       reel.animations.add(animation);
 
-      return { symbol, coords, block: reel.options.block };
+      return {
+        symbol,
+        coords,
+        block: reel.options.block,
+      };
     });
+
+    const size = prevSymbols.length;
+
+    // During the initial animation, there are no previous symbols to replace
+    if (size !== 0) {
+      // Replace the last visible blocks on the nextSymbols array to keep the animation smooth
+      for (let i = 0; i < visibleBlocks; i++) {
+        nextSymbols[size - visibleBlocks + i].symbol = prevSymbols[i + IgnoreStartSymbolCount].symbol;
+      }
+    }
+
+    // Update the animation blocks
+    reel.animationBlocks = nextSymbols;
   };
 }
 
@@ -84,20 +105,44 @@ export function FixedMode(reel) {
    * @readonly
    * @returns {void}
    */
-  this.generateReelSymbols = () => {
+  this.getReelSymbols = () => {
     throw new Error('Not implemented');
   };
 }
 
 /**
- * @description Factory function to create slot mode strategies.
+ * @description Mode composition for slot machine.
  * @param {Reel} reel - Reel instance
- * @returns {Record<Mode, ModeStrategy>} - Slot mode strategies
+ * @param {Mode} activeMode - Active mode
+ *
  * @constructor
  */
-export function Modes(reel) {
-  return {
-    random: new RandomMode(reel),
-    fixed: new FixedMode(reel),
+export function Modes(reel, activeMode) {
+  /**
+   * @readonly
+   * @private
+   */
+  this.fixed = new FixedMode(reel);
+
+  /**
+   * @readonly
+   * @private
+   */
+  this.random = new RandomMode(reel);
+
+  /**
+   * @public
+   * @readonly
+   * @returns {RandomMode|FixedMode}
+   */
+  this.getCurrent = () => {
+    switch (activeMode) {
+      case 'fixed':
+        return this.fixed;
+      case 'random':
+        return this.random;
+      default:
+        throw new Error(`Mode ${activeMode} is not defined`);
+    }
   };
 }

@@ -41,14 +41,14 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
    * @readonly
    * @type {number}
    */
-  this.width = block.width * reel.count + reel.padding.x * 2 + block.lineWidth * (reel.count - 1);
+  this.width = block.width * reel.cols + reel.padding.x * 2 + block.lineWidth * (reel.cols - 1);
 
   /**
    * @public
    * @readonly
    * @type {number}
    */
-  this.height = block.height * 2;
+  this.height = block.height * reel.rows;
 
   /**
    * @private
@@ -66,12 +66,13 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
    * @readonly
    */
   this.start = () => {
-    this.reels = createEmptyArray(reel.count).map((index) => {
+    this.reels = createEmptyArray(reel.cols).map((index) => {
       return new Reel({
         ctx: this.ctx,
         height: this.height,
         padding: reel.padding,
         animationTime: reel.animationTime,
+        rows: reel.rows,
         mode,
         color,
         block,

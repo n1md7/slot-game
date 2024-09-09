@@ -65,7 +65,8 @@ assetLoader.onLoadFinish((assets) => {
       border: '#000000',
     },
     reel: {
-      count: 3,
+      rows: 3,
+      cols: 5,
       animationTime: 2000,
       padding: {
         x: 1,
