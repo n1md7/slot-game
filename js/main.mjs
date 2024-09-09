@@ -62,11 +62,11 @@ assetLoader.onLoadFinish((assets) => {
     mode: 'random',
     color: {
       background: '#292424',
-      border: '#000000',
+      border: '#293434',
     },
     reel: {
-      rows: 3,
-      cols: 5,
+      rows: 2,
+      cols: 3,
       animationTime: 2000,
       padding: {
         x: 1,
@@ -75,7 +75,7 @@ assetLoader.onLoadFinish((assets) => {
     block: {
       width: 141,
       height: 121,
-      lineWidth: 0,
+      lineWidth: 1,
       padding: 4,
     },
     symbols,

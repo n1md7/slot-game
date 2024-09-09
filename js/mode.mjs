@@ -43,7 +43,6 @@ export function RandomMode(reel) {
       (visibleBlocks + IgnoreStartSymbolCount - reel.animationBlockslength) * reel.options.block.height,
     );
 
-    const prevSymbols = reel.animationBlocks;
     const nextSymbols = createEmptyArray(reel.animationBlockslength).map((index) => {
       const coords = { yOffset: (index - reel.animationBlockslength + visibleBlocks) * reel.options.block.height };
       const symbol = this.getRandomSymbol();
@@ -74,15 +73,12 @@ export function RandomMode(reel) {
         block: reel.options.block,
       };
     });
-
+    // During the initial animation, there are no previous symbols to replace, so we use the nextSymbols array as a placeholder
+    const prevSymbols = reel.animationBlocks.length > 0 ? reel.animationBlocks : nextSymbols;
     const size = prevSymbols.length;
-
-    // During the initial animation, there are no previous symbols to replace
-    if (size !== 0) {
-      // Replace the last visible blocks on the nextSymbols array to keep the animation smooth
-      for (let i = 0; i < visibleBlocks; i++) {
-        nextSymbols[size - visibleBlocks + i].symbol = prevSymbols[i + IgnoreStartSymbolCount].symbol;
-      }
+    // Replace the last visible blocks on the nextSymbols array to keep the animation smooth
+    for (let i = 0; i < visibleBlocks; i++) {
+      nextSymbols[size - visibleBlocks + i].symbol = prevSymbols[i + IgnoreStartSymbolCount].symbol;
     }
 
     // Update the animation blocks
