@@ -71,19 +71,19 @@ export function Reel(options) {
   this.symbolKeys = Object.keys(options.symbols);
 
   /**
-   * Animation blocks size.
+   * Total blocks to draw on the reel
    *
    * @public
    * @readonly
    * @type {number}
    */
-  this.animationBlockslength = 2 * options.rows + options.index + IgnoreStartSymbolCount;
+  this.totalBlocks = 2 * options.rows + options.index + IgnoreStartSymbolCount;
 
   /**
    * @public
    * @type {BlockType[]}
    */
-  this.animationBlocks = [];
+  this.blocks = [];
 
   /**
    * @public
@@ -97,7 +97,7 @@ export function Reel(options) {
    * @returns {void}
    */
   this.drawBlocks = () => {
-    for (const block of this.animationBlocks) {
+    for (const block of this.blocks) {
       this.canvas.draw(block);
     }
   };
@@ -109,8 +109,10 @@ export function Reel(options) {
    * @readonly
    */
   this.reset = () => {
-    this.mode.getReelSymbols();
+    this.animations.removeAll();
+    this.mode.genReelSymbols();
     this.drawBlocks();
+    this.isSpinning = false;
   };
 
   /**

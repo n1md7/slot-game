@@ -35,7 +35,7 @@ const assetLoader = new AssetLoader([
   './img/1xBAR.png',
   './img/2xBAR.png',
   './img/3xBAR.png',
-  './img/7.png',
+  './img/Seven.png',
   './img/Cherry.png',
 ]);
 
@@ -53,7 +53,7 @@ assetLoader.onLoadFinish((assets) => {
     '1xBAR': assets.find(({ name }) => name === '1xBAR').img,
     '2xBAR': assets.find(({ name }) => name === '2xBAR').img,
     '3xBAR': assets.find(({ name }) => name === '3xBAR').img,
-    7: assets.find(({ name }) => name === '7').img,
+    Seven: assets.find(({ name }) => name === 'Seven').img,
     Cherry: assets.find(({ name }) => name === 'Cherry').img,
   };
 
@@ -67,7 +67,7 @@ assetLoader.onLoadFinish((assets) => {
     reel: {
       rows: 2,
       cols: 3,
-      animationTime: 2000,
+      animationTime: 1000,
       padding: {
         x: 1,
       },

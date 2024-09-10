@@ -1,7 +1,7 @@
 {
   "name": "slot-game",
   "version": "1.0.0",
-  "description": "Javascript 3x3 slot game",
+  "description": "Javascript NxN slot game",
   "scripts": {
     "format:code": "npx prettier --write .",
     "format:check": "npx prettier --check .",

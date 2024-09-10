@@ -1,5 +1,6 @@
 import { Reel } from './reel.mjs';
 import { createEmptyArray } from './utils.mjs';
+import { Calculator } from './calculator.mjs';
 
 /**
  * import { ReelOptions, ReelSymbols, ColorOptions, BlockOptions, PaddingOptions, Mode } from './types.mjs';
@@ -22,6 +23,13 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
    * @type {CanvasRenderingContext2D}
    */
   this.ctx = canvas.getContext('2d');
+
+  /**
+   * @private
+   * @readonly
+   * @type {Calculator}
+   */
+  this.calculator = new Calculator(reel);
 
   /**
    * @private
@@ -93,6 +101,10 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
     if (this.isSpinning) return;
 
     this.reels.forEach((reel) => reel.spin());
+
+    setTimeout(() => {
+      this.calculator.calculate(this.reels);
+    }, reel.animationTime);
   };
 
   /**

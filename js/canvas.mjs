@@ -2,6 +2,8 @@
  * import {ColorOptions} from './reel.mjs';
  */
 
+import { decToHex } from './utils.mjs';
+
 /**
  * @description Custom Canvas wrapper for drawing blocks
  * @param {Object} options - Block options
@@ -45,11 +47,41 @@ export function Canvas(options) {
     const symbolWidth = block.width - padding * 2;
     const symbolHeight = block.height - padding * 2;
 
-    ctx.strokeStyle = options.color.border;
+    /*ctx.strokeStyle = options.color.border;
     ctx.lineWidth = block.lineWidth;
     ctx.fillStyle = options.color.background;
     ctx.fillRect(this.xOffset, yOffset, width, height);
     ctx.drawImage(options.symbols[symbol], this.xOffset + padding, yOffset + padding, symbolWidth, symbolHeight);
-    ctx.strokeRect(this.xOffset, yOffset, width, height);
+    ctx.strokeRect(this.xOffset, yOffset, width, height);*/
+
+    const width = block.width;
+    const height = block.height;
+    const rotate = block.rotate || 0;
+    const { r, g, b } = block.color;
+    const color = `#${decToHex(r)}${decToHex(g)}${decToHex(b)}`;
+
+    // Save the canvas state before drawing the block
+    ctx.save();
+
+    // Set the styles for the block
+    ctx.strokeStyle = options.color.border;
+    ctx.lineWidth = block.lineWidth;
+    ctx.fillStyle = color;
+
+    // Translate the canvas to the block's center for rotation
+    const xCenter = this.xOffset + width / 2;
+    const yCenter = yOffset + height / 2;
+
+    // Translate to the block's center and apply rotation
+    ctx.translate(xCenter, yCenter);
+    ctx.rotate(rotate * (Math.PI / 180)); // Apply the rotation
+
+    // Draw the rotated block (fillRect and strokeRect) and the symbol
+    ctx.fillRect(-width / 2, -height / 2, width, height);
+    ctx.drawImage(options.symbols[symbol], -symbolWidth / 2, -symbolHeight / 2, symbolWidth, symbolHeight);
+    ctx.strokeRect(-width / 2, -height / 2, width, height);
+
+    // Restore the canvas state after drawing the block
+    ctx.restore();
   };
 }

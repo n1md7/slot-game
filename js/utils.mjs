@@ -18,3 +18,30 @@ export function createOption(value, parent) {
   option.innerText = value;
   parent.appendChild(option);
 }
+
+/**
+ * @description Convert hex color value to object
+ * @param {string} hexValue
+ * @returns {{r: number, b: number, g: number}}
+ */
+export function hexToObject(hexValue) {
+  if (!hexValue.startsWith('#')) {
+    throw new Error('Invalid hex value: ' + hexValue);
+  }
+
+  return {
+    r: parseInt(hexValue.slice(1, 3), 10),
+    g: parseInt(hexValue.slice(3, 5), 10),
+    b: parseInt(hexValue.slice(5, 7), 10),
+  };
+}
+
+/**
+ * @description Convert single decimal number to hex string
+ * @param {number} value
+ * @returns {string}
+ * @example decToHex(255) // 'ff'
+ */
+export function decToHex(value) {
+  return Math.floor(value).toString(16).padStart(2, '0');
+}

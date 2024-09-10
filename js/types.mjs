@@ -4,11 +4,19 @@
  * @property {HTMLImageElement} 2xBAR - 2xBAR symbol source
  * @property {HTMLImageElement} 3xBAR - 3xBAR symbol source
  * @property {HTMLImageElement} Cherry - Cherry symbol source
- * @property {HTMLImageElement} 7 - 7 symbol source
+ * @property {HTMLImageElement} Seven - Seven symbol source
  */
 
 /**
- * @typedef {'1xBAR' | '2xBAR' | '3xBAR' | '7' | 'Cherry'} ReelSymbol
+ * @typedef {'1xBAR' | '2xBAR' | '3xBAR' | 'Seven' | 'Cherry'} ReelSymbol
+ */
+
+/**
+ * @typedef {Object} BlockType - Reel block type
+ * @property {ReelSymbol} symbol - Symbol to draw
+ * @property {Object} coords - Block coordinates
+ * @property {number} coords.yOffset - Y offset from the top to position
+ * @property {BlockOptions} block - Block options
  */
 
 /**
@@ -17,6 +25,11 @@
  * @property {number} height - Slot block height
  * @property {number} lineWidth - Slot block line width
  * @property {number} padding - Slot block padding (Both sides)
+ * @property {Object} [color] - Slot block color options
+ * @property {number} color.r - Red color value
+ * @property {number} color.g - Green color value
+ * @property {number} color.b - Blue color value
+ * @property {number} [rotate = 0] - Slot block rotation
  */
 
 /**
@@ -28,14 +41,6 @@
 /**
  * @typedef {Object} PaddingOptions - Reel padding options
  * @property {number} x - Slot left/right padding
- */
-
-/**
- * @typedef {Object} BlockType - Reel block type
- * @property {ReelSymbol} symbol - Symbol to draw
- * @property {Object} coords - Block coordinates
- * @property {number} coords.yOffset - Y offset from the top to position
- * @property {BlockOptions} block - Block options
  */
 
 /**
@@ -65,6 +70,7 @@
  * @property {Function} from - Set tween start
  * @property {Function} easing - Set tween easing function
  * @property {Function} duration - Set tween duration
+ * @property {Function} yoyo - Set tween yoyo
  * @property {Function} delay - Set tween delay
  * @property {Function} onStart - Set tween start callback
  * @property {Function} onUpdate - Set tween update callback
@@ -73,36 +79,36 @@
 
 /**
  * @typedef {Object} Easing - Tween easing functions
- * @property {Object} Back - Back easing functions
- * @property {Function} Back.In - Back easing in function
- * @property {Function} Back.Out - Back easing out function
- * @property {Function} Back.InOut - Back easing in-out function
- * @property {Object} Bounce - Bounce easing functions
- * @property {Function} Bounce.In - Bounce easing in function
- * @property {Function} Bounce.Out - Bounce easing out function
- * @property {Function} Bounce.InOut - Bounce easing in-out function
- * @property {Object} Circular - Circular easing functions
- * @property {Function} Circular.In - Circular easing in function
- * @property {Function} Circular.Out - Circular easing out function
- * @property {Function} Circular.InOut - Circular easing in-out function
- * @property {Object} Cubic - Cubic easing functions
- * @property {Function} Cubic.In - Cubic easing in function
- * @property {Function} Cubic.Out - Cubic easing out function
- * @property {Function} Cubic.InOut - Cubic easing in-out function
- * @property {Object} Elastic - Elastic easing functions
- * @property {Function} Elastic.In - Elastic easing in function
- * @property {Function} Elastic.Out - Elastic easing out function
- * @property {Function} Elastic.InOut - Elastic easing in-out function
- * @property {Object} Expo - Expo easing functions
- * @property {Function} Expo.In - Expo easing in function
- * @property {Function} Expo.Out - Expo easing out function
- * @property {Function} Expo.InOut - Expo easing in-out function
- * @property {Object} Linear - Linear easing functions
- * @property {Function} Linear.None - Linear easing none function
- * @property {Object} Quad - Quad easing functions
- * @property {Function} Quad.In - Quad easing in function
- * @property {Function} Quad.Out - Quad easing out function
- * @property {Function} Quad.InOut - Quad easing in-out function
+ * @property {Object} Easing.Back - Back easing functions
+ * @property {Function} Easing.Back.In - Back easing in function
+ * @property {Function} Easing.Back.Out - Back easing out function
+ * @property {Function} Easing.Back.InOut - Back easing in-out function
+ * @property {Object} Easing.Bounce - Bounce easing functions
+ * @property {Function} Easing.Bounce.In - Bounce easing in function
+ * @property {Function} Easing.Bounce.Out - Bounce easing out function
+ * @property {Function} EasingBounce.InOut - Bounce easing in-out function
+ * @property {Object} Easing.Circular - Circular easing functions
+ * @property {Function} Easing.Circular.In - Circular easing in function
+ * @property {Function} Easing.Circular.Out - Circular easing out function
+ * @property {Function} Easing.Circular.InOut - Circular easing in-out function
+ * @property {Object} Easing.Cubic - Cubic easing functions
+ * @property {Function} Easing.Cubic.In - Cubic easing in function
+ * @property {Function} Easing.Cubic.Out - Cubic easing out function
+ * @property {Function} Easing.Cubic.InOut - Cubic easing in-out function
+ * @property {Object} Easing.Elastic - Elastic easing functions
+ * @property {Function} Easing.Elastic.In - Elastic easing in function
+ * @property {Function} Easing.Elastic.Out - Elastic easing out function
+ * @property {Function} Easing.Elastic.InOut - Elastic easing in-out function
+ * @property {Object} Easing.Expo - Expo easing functions
+ * @property {Function} Easing.Expo.In - Expo easing in function
+ * @property {Function} Easing.Expo.Out - Expo easing out function
+ * @property {Function} Easing.Expo.InOut - Expo easing in-out function
+ * @property {Object} Easing.Linear - Linear easing functions
+ * @property {Function} Easing.Linear.None - Linear easing none function
+ * @property {Object} Easing.Quad - Quad easing functions
+ * @property {Function} Easing.Quad.In - Quad easing in function
+ * @property {Function} Easing.Quad.Out - Quad easing out function
+ * @property {Function} Easing.Quad.InOut - Quad easing in-out function
  */
 
 /**
@@ -110,7 +116,7 @@
  * @param {Object} options - Mode options
  * @param {Reel} options.reel - Reel instance
  *
- * @method getReelSymbols - Generate reel symbols
+ * @method genReelSymbols - Generate reel symbols
  * @returns {void}
  *
  * @constructor
