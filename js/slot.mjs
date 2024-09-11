@@ -1,8 +1,7 @@
 import { Reel } from './reel.mjs';
 import { createEmptyArray, waitFor } from './utils.mjs';
 import { Calculator } from './calculator.mjs';
-import { AllSame, AnyBar, CherryOrSeven } from './constants.js';
-import { payTable } from './pay-table.mjs';
+import { Effects } from './effects.mjs';
 
 /**
  * import { ReelOptions, ReelSymbols, ColorOptions, BlockOptions, PaddingOptions, Mode } from './types.mjs';
@@ -29,16 +28,23 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
   /**
    * @private
    * @readonly
-   * @type {Calculator}
+   * @type {Reel[]}
    */
-  this.calculator = new Calculator(reel);
+  this.reels = [];
 
   /**
    * @private
    * @readonly
-   * @type {Reel[]}
+   * @type {Effects}
    */
-  this.reels = [];
+  this.effects = new Effects(this.reels);
+
+  /**
+   * @private
+   * @readonly
+   * @type {Calculator}
+   */
+  this.calculator = new Calculator(this.reels);
 
   /**
    * @private
@@ -82,19 +88,21 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
    * @readonly
    */
   this.start = () => {
-    this.reels = createEmptyArray(reel.cols).map((index) => {
-      return new Reel({
-        ctx: this.ctx,
-        height: this.height,
-        padding: reel.padding,
-        animationTime: reel.animationTime,
-        rows: reel.rows,
-        mode,
-        color,
-        block,
-        symbols,
-        index,
-      });
+    createEmptyArray(reel.cols).forEach((index) => {
+      this.reels.push(
+        new Reel({
+          ctx: this.ctx,
+          height: this.height,
+          padding: reel.padding,
+          animationTime: reel.animationTime,
+          rows: reel.rows,
+          mode,
+          color,
+          block,
+          symbols,
+          index,
+        }),
+      );
     });
 
     this.paintBackground();
@@ -144,8 +152,7 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
     const totalWin = winners.reduce((acc, { money }) => acc + money, 0);
     for (const winner of winners) {
       // We have a winner, let's highlight the blocks
-      this.highlightBlocks(winner.blocks);
-
+      this.effects.highlight(winner.blocks);
       console.info(`Winner: ${winner.type}, line: ${winner.rowIndex}, money: ${winner.money}`);
     }
 
@@ -157,15 +164,5 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
     waitFor(reel.animationTime / 2).then(() => {
       this.checking = false;
     });
-  };
-
-  /**
-   * @private
-   * @param {BlockType[]} blocks
-   */
-  this.highlightBlocks = (blocks) => {
-    for (const [reelIndex, { block }] of blocks.entries()) {
-      this.reels[reelIndex].highlightBlock(block);
-    }
   };
 }

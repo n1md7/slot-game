@@ -13,14 +13,15 @@ import {
   IgnoreStartSymbolCount,
   Seven,
 } from './constants.js';
-import { payTable } from './pay-table.mjs';
+import { payTable } from './payTable.mjs';
 
 /**
  * Slot Calculator class. It's responsible for calculating the slot results
+ * @param {Reel[]} reels
  *
  * @constructor
  */
-export function Calculator() {
+export function Calculator(reels) {
   /**
    * @private
    * @readonly
@@ -30,12 +31,11 @@ export function Calculator() {
 
   /**
    * @description Get the visible rows
-   * @param {Reel[]} reels
    * @private
    * @readonly
    * @returns {BlockType[][]}
    */
-  this.getVisibleBlocks = (reels) => {
+  this.getVisibleBlocks = () => {
     /** @type {BlockType[][]} */
     const rows = [];
     const start = IgnoreStartSymbolCount;
@@ -58,10 +58,9 @@ export function Calculator() {
    * @description Calculate the slot results
    * @readonly
    * @public
-   * @param {Reel[]} reels
    * @returns {WinnerType[]}
    */
-  this.calculate = (reels) => {
+  this.calculate = () => {
     /**
      * @description Winning combinations
      * @type {WinnerType[]}
