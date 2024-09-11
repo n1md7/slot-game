@@ -1,7 +1,6 @@
 import { AssetLoader } from './loader.mjs';
 import { Slot } from './slot.mjs';
 import { Engine } from './engine.mjs';
-import { createOption } from './utils.mjs';
 import { BARx1, BARx2, BARx3, Cherry, ModeRandom, Seven } from './constants.js';
 import { configureGUI } from './gui.mjs';
 
@@ -44,10 +43,6 @@ const assetLoader = new AssetLoader([
 assetLoader.onLoadFinish((assets) => {
   console.info('All assets loaded', assets);
 
-  assets.forEach(({ name }) => {
-    createOption(name, config.ui.select.symbol);
-  });
-
   /**
    * @type {ReelSymbols}
    */
@@ -67,8 +62,8 @@ assetLoader.onLoadFinish((assets) => {
       border: '#2b2b2b',
     },
     reel: {
-      rows: 2,
-      cols: 3,
+      rows: 3,
+      cols: 4,
       animationTime: 1000,
       padding: {
         x: 1,
@@ -92,7 +87,7 @@ assetLoader.onLoadFinish((assets) => {
 
   engine.start();
 
-  configureGUI(slot);
+  configureGUI(slot, engine);
 });
 
 assetLoader.start();

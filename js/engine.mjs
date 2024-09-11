@@ -6,20 +6,20 @@
  * @description Simple Game Engine
  * @param {Slot} game - Game Slot instance
  * @param {Object} options - Engine options
- * @param {number} [options.FPS = 60] - Frames per second
+ * @param {number} options.FPS - Frames per second
  *
  * @constructor
  */
 export function Engine(game, options) {
-  const FPS = options.FPS || 60;
   /**
-   * @description Frame interval in milliseconds, this is a delay between each frames
-   * @type {number}
-   * @constant
+   * @description Engine options
+   * @public
+   * @readonly
+   * @type {Object}
    */
-  const FRAME_INTERVAL = 1000 / FPS; // ~16ms
+  this.options = options;
 
-  const ticker = new Ticker(FRAME_INTERVAL);
+  const ticker = new Ticker(options);
 
   this.start = () => {
     game.start();
@@ -37,13 +37,15 @@ export function Engine(game, options) {
 
 /**
  * @description Ticker
- * @param {number} interval
+ * @param {Object} options - Engine options
+ * @param {number} options.FPS - Frames per second
  * @constructor
  */
-function Ticker(interval) {
+function Ticker(options) {
   let lastTickTime = 0;
 
   this.needsUpdate = (current) => {
+    const interval = 1000 / options.FPS; // ~16ms
     const delta = current - lastTickTime;
     if (delta > interval) {
       lastTickTime = current - (delta % interval);

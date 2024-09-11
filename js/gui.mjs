@@ -6,9 +6,10 @@ export const gui = new GUI();
 
 /**
  * @param {Slot} slot
+ * @param {Engine} engine
  * @returns {void}
  */
-export const configureGUI = (slot) => {
+export const configureGUI = (slot, engine) => {
   const actions = {
     Reset() {
       gui.reset();
@@ -18,6 +19,12 @@ export const configureGUI = (slot) => {
 
   gui.title('Slot Machine');
   gui.add(slot.options, 'mode', { Random: ModeRandom, Fixed: ModeFixed });
+  gui.add(engine.options, 'FPS', 6, 60, 1);
+
+  const reel = gui.addFolder('Reel configuration', slot.options.reel);
+  reel.add(slot.options.reel, 'rows', 1, 5, 1);
+  reel.add(slot.options.reel, 'cols', 3, 7, 1);
+  reel.add(slot.options.reel, 'animationTime', 200, 5000, 100);
 
   const block = gui.addFolder('Block configuration', slot.options.block);
   block.addColor(slot.options.color, 'background');
@@ -25,19 +32,11 @@ export const configureGUI = (slot) => {
   block.add(slot.options.block, 'width', 16, 256, 8);
   block.add(slot.options.block, 'height', 16, 256, 8);
   block.add(slot.options.block, 'lineWidth', 0, 4, 1);
-  block.add(slot.options.block, 'padding', 0, 10, 1);
-
-  const reel = gui.addFolder('Reel configuration', slot.options.reel);
-  reel.add(slot.options.reel, 'animationTime', 200, 5000, 100);
-  reel.add(slot.options.reel, 'rows', 1, 5, 1);
-  reel.add(slot.options.reel, 'cols', 1, 7, 1);
-
-  const reelPadding = reel.addFolder('Padding', slot.options.reel.padding);
-  reelPadding.add(slot.options.reel.padding, 'x', 0, 64, 1);
+  block.add(slot.options.block, 'padding', 0, 48, 1);
 
   gui.add(actions, 'Reset');
 
-  gui.onFinishChange((change) => {
+  gui.onFinishChange(() => {
     slot.reset();
   });
 };

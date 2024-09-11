@@ -17,8 +17,6 @@ import { decToHex } from './utils.mjs';
  * @constructor
  */
 export function Canvas(options) {
-  const { ctx, width, height } = options;
-
   /**
    * @private
    * @type {number}
@@ -31,7 +29,7 @@ export function Canvas(options) {
    * @returns {void}
    */
   this.clearBlock = () => {
-    ctx.clearRect(this.xOffset, 0, width, height);
+    options.ctx.clearRect(this.xOffset, 0, options.width, options.height);
   };
 
   /**
@@ -48,11 +46,17 @@ export function Canvas(options) {
     const symbolHeight = block.height - padding * 2;
     const { r, g, b } = block.color;
 
-    ctx.strokeStyle = options.color.border;
-    ctx.lineWidth = block.lineWidth;
-    ctx.fillStyle = `#${decToHex(r)}${decToHex(g)}${decToHex(b)}`;
-    ctx.fillRect(this.xOffset, yOffset, width, height);
-    ctx.drawImage(options.symbols[symbol], this.xOffset + padding, yOffset + padding, symbolWidth, symbolHeight);
-    ctx.strokeRect(this.xOffset, yOffset, width, height);
+    options.ctx.strokeStyle = options.color.border;
+    options.ctx.lineWidth = block.lineWidth;
+    options.ctx.fillStyle = `#${decToHex(r)}${decToHex(g)}${decToHex(b)}`;
+    options.ctx.fillRect(this.xOffset, yOffset, options.width, options.height);
+    options.ctx.drawImage(
+      options.symbols[symbol],
+      this.xOffset + padding,
+      yOffset + padding,
+      symbolWidth,
+      symbolHeight,
+    );
+    options.ctx.strokeRect(this.xOffset, yOffset, options.width, options.height);
   };
 }

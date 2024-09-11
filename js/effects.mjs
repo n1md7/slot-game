@@ -1,4 +1,4 @@
-import { Group, Tween, Easing } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
+import { Easing, Tween } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
 import { Reel } from './reel.mjs';
 
 /**
@@ -15,9 +15,8 @@ export function Effects(reels) {
    * @param {number} reelIndex
    */
   this.highlightBlock = (block, reelIndex) => {
-    block.color = { r: 255, g: 255, b: 255 };
     reels[reelIndex].animations.add(
-      new Tween(block.color).to({ r: 0, g: 0, b: 0 }, 300).easing(Easing.Cubic.InOut).repeat(Infinity).start(),
+      new Tween(block.color).to({ r: 255, g: 255, b: 255 }, 300).easing(Easing.Cubic.InOut).repeat(Infinity).start(),
     );
   };
 

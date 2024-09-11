@@ -8,18 +8,6 @@ export function createEmptyArray(length) {
 }
 
 /**
- * @description Create SelectBox option element and append to parent
- * @param {string} value
- * @param {HTMLSelectElement} parent
- */
-export function createOption(value, parent) {
-  const option = document.createElement('option');
-  option.value = value;
-  option.innerText = value;
-  parent.appendChild(option);
-}
-
-/**
  * @description Convert hex color value to object
  * @param {string} hexValue
  * @param {number} radix
