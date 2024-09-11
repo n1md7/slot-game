@@ -2,7 +2,8 @@ import { AssetLoader } from './loader.mjs';
 import { Slot } from './slot.mjs';
 import { Engine } from './engine.mjs';
 import { createOption } from './utils.mjs';
-import { BARx1, BARx2, BARx3, Cherry, Seven } from './constants.js';
+import { BARx1, BARx2, BARx3, Cherry, ModeRandom, Seven } from './constants.js';
+import { configureGUI } from './gui.mjs';
 
 /**
  * @import {ReelSymbols} from './reel.mjs';
@@ -60,14 +61,14 @@ assetLoader.onLoadFinish((assets) => {
 
   const slot = new Slot({
     canvas: config.ui.canvas,
-    mode: 'random',
+    mode: ModeRandom,
     color: {
-      background: '#292424',
-      border: '#293434',
+      background: '#313030',
+      border: '#2b2b2b',
     },
     reel: {
-      rows: 3,
-      cols: 2,
+      rows: 2,
+      cols: 3,
       animationTime: 1000,
       padding: {
         x: 1,
@@ -76,18 +77,22 @@ assetLoader.onLoadFinish((assets) => {
     block: {
       width: 141,
       height: 121,
-      lineWidth: 1,
+      lineWidth: 0,
       padding: 4,
     },
     symbols,
   });
-  config.ui.canvas.setAttribute('width', slot.width.toString());
-  config.ui.canvas.setAttribute('height', slot.height.toString());
+
+  slot.updateCanvasSize();
+
   const engine = new Engine(slot, { FPS: 60 });
 
+  // Bind events
   config.ui.btn.spin.onclick = () => slot.spin();
 
   engine.start();
+
+  configureGUI(slot);
 });
 
 assetLoader.start();

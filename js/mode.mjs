@@ -1,6 +1,6 @@
 import { Easing, Tween } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
 import { createEmptyArray, hexToObject } from './utils.mjs';
-import { IgnoreStartSymbolCount } from './constants.js';
+import { IgnoreStartSymbolCount, ModeFixed, ModeRandom } from './constants.js';
 
 /**
  * import { ModeStrategy, Tween, Easing } from './types.mjs';
@@ -69,7 +69,7 @@ export function RandomMode(reel) {
       reel.animations.add(animation);
 
       const block = { ...reel.options.block }; // Copy the block options
-      block.color = hexToObject(reel.options.color.background);
+      block.color = hexToObject(reel.options.color.background, 16);
 
       return {
         symbol,
@@ -137,9 +137,9 @@ export function Modes(reel, activeMode) {
    */
   this.getCurrent = () => {
     switch (activeMode) {
-      case 'fixed':
+      case ModeFixed:
         return this.fixed;
-      case 'random':
+      case ModeRandom:
         return this.random;
       default:
         throw new Error(`Mode ${activeMode} is not defined`);

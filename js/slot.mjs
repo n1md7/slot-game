@@ -4,21 +4,24 @@ import { Calculator } from './calculator.mjs';
 import { Effects } from './effects.mjs';
 
 /**
- * import { ReelOptions, ReelSymbols, ColorOptions, BlockOptions, PaddingOptions, Mode } from './types.mjs';
+ * import { ReelOptions, ReelSymbols, ColorOptions, BlockOptions, PaddingOptions, Mode, SlotOptions } from './types.mjs';
  */
 
 /**
- * @param {Object} options - Slot options
- * @param {HTMLCanvasElement} options.canvas - Canvas instance
- * @param {Mode} options.mode - Slot mode
- * @param {ColorOptions} options.color - Slot colors
- * @param {BlockOptions} options.block - Slot block options
- * @param {ReelSymbols} options.symbols - Slot symbols object
- * @param {ReelOptions} options.reel - Slot reels
- *
+ * Slot class. It's responsible for the slot game
+ * @param {SlotOptions} options - Slot options
  * @constructor
  */
-export function Slot({ mode, canvas, color, block, symbols, reel }) {
+export function Slot(options) {
+  /**
+   * @public
+   * @readonly
+   * @type {SlotOptions}
+   */
+  this.options = options;
+
+  const { mode, canvas, color, block, symbols, reel } = this.options;
+
   /**
    * @private
    * @type {CanvasRenderingContext2D}
@@ -59,18 +62,18 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
   this.checking = false;
 
   /**
-   * @public
+   * @private
    * @readonly
-   * @type {number}
+   * @return {number}
    */
-  this.width = block.width * reel.cols + reel.padding.x * 2 + block.lineWidth * (reel.cols - 1);
+  this.getWidth = () => block.width * reel.cols + reel.padding.x * 2 + block.lineWidth * (reel.cols - 1);
 
   /**
-   * @public
+   * @private
    * @readonly
-   * @type {number}
+   * @return {number}
    */
-  this.height = block.height * reel.rows;
+  this.getHeight = () => block.height * reel.rows;
 
   /**
    * @private
@@ -80,7 +83,7 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
    */
   this.paintBackground = () => {
     this.ctx.fillStyle = color.background;
-    this.ctx.fillRect(0, 0, this.width, this.height);
+    this.ctx.fillRect(0, 0, this.getWidth(), this.getHeight());
   };
 
   /**
@@ -88,25 +91,7 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
    * @readonly
    */
   this.start = () => {
-    createEmptyArray(reel.cols).forEach((index) => {
-      this.reels.push(
-        new Reel({
-          ctx: this.ctx,
-          height: this.height,
-          padding: reel.padding,
-          animationTime: reel.animationTime,
-          rows: reel.rows,
-          mode,
-          color,
-          block,
-          symbols,
-          index,
-        }),
-      );
-    });
-
-    this.paintBackground();
-    this.reels.forEach((reel) => reel.reset());
+    this.reset();
   };
 
   /**
@@ -141,7 +126,7 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
   this.evaluateWin = () => {
     this.checking = true;
 
-    const winners = this.calculator.calculate(this.reels);
+    const winners = this.calculator.calculate();
 
     if (!winners.length) {
       this.checking = false;
@@ -164,5 +149,43 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
     waitFor(reel.animationTime / 2).then(() => {
       this.checking = false;
     });
+  };
+
+  /**
+   * @public
+   * @readonly
+   */
+  this.reset = () => {
+    this.reels.length = 0; // Clear the reels without creating a new array
+    this.paintBackground();
+
+    createEmptyArray(reel.cols).forEach((index) => {
+      this.reels.push(
+        new Reel({
+          ctx: this.ctx,
+          height: this.getHeight(),
+          padding: reel.padding,
+          animationTime: reel.animationTime,
+          rows: reel.rows,
+          block,
+          mode,
+          color,
+          symbols,
+          index,
+        }),
+      );
+    });
+
+    this.reels.forEach((reel) => reel.reset());
+    this.updateCanvasSize();
+  };
+
+  /**
+   * @public
+   * @readonly
+   */
+  this.updateCanvasSize = () => {
+    options.canvas.setAttribute('width', this.getWidth().toString());
+    options.canvas.setAttribute('height', this.getHeight().toString());
   };
 }

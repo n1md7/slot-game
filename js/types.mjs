@@ -132,3 +132,13 @@
  * @property {number} money - Winner money
  * @property {BlockType[]} blocks - Winner blocks
  */
+
+/**
+ * @typedef {Object} SlotOptions - Slot options
+ * @property {HTMLCanvasElement} canvas - Canvas instance
+ * @property {Mode} mode - Slot mode
+ * @property {ColorOptions} color - Slot colors
+ * @property {BlockOptions} block - Slot block options
+ * @property {ReelSymbols} symbols - Slot symbols object
+ * @property {ReelOptions} reel - Slot reels
+ */

@@ -22,17 +22,18 @@ export function createOption(value, parent) {
 /**
  * @description Convert hex color value to object
  * @param {string} hexValue
+ * @param {number} radix
  * @returns {{r: number, b: number, g: number}}
  */
-export function hexToObject(hexValue) {
+export function hexToObject(hexValue, radix = 10) {
   if (!hexValue.startsWith('#')) {
     throw new Error('Invalid hex value: ' + hexValue);
   }
 
   return {
-    r: parseInt(hexValue.slice(1, 3), 10),
-    g: parseInt(hexValue.slice(3, 5), 10),
-    b: parseInt(hexValue.slice(5, 7), 10),
+    r: parseInt(hexValue.slice(1, 3), radix),
+    g: parseInt(hexValue.slice(3, 5), radix),
+    b: parseInt(hexValue.slice(5, 7), radix),
   };
 }
 

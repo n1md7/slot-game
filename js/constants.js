@@ -56,3 +56,6 @@ export const LineTwo = 1;
 export const LineThree = 2;
 export const LineFour = 3;
 export const LineFive = 4;
+
+export const ModeFixed = 'fixed';
+export const ModeRandom = 'random';
