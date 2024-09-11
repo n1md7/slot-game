@@ -45,3 +45,10 @@ export function hexToObject(hexValue) {
 export function decToHex(value) {
   return Math.floor(value).toString(16).padStart(2, '0');
 }
+
+/**
+ * @description Wait for specified time
+ * @param {number} ms - Time in milliseconds to wait
+ * @returns {Promise<unknown>}
+ */
+export const waitFor = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

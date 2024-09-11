@@ -1,4 +1,4 @@
-import { Group } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
+import { Group, Tween, Easing } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
 import { Canvas } from './canvas.mjs';
 import { Modes } from './mode.mjs';
 import { IgnoreStartSymbolCount } from './constants.js';
@@ -122,8 +122,6 @@ export function Reel(options) {
    * @param {DOMHighResTimeStamp} time
    */
   this.update = (time) => {
-    if (!this.isSpinning) return;
-
     this.canvas.clearBlock();
     this.animations.update(time);
     this.drawBlocks();
@@ -137,5 +135,18 @@ export function Reel(options) {
   this.spin = () => {
     this.reset();
     this.isSpinning = true;
+  };
+
+  /**
+   * Highlight the winning block
+   * @public
+   * @readonly
+   * @param {BlockOptions} block
+   */
+  this.highlightBlock = (block) => {
+    block.color = { r: 255, g: 255, b: 255 };
+    this.animations.add(
+      new Tween(block.color).to({ r: 0, g: 0, b: 0 }, 300).easing(Easing.Cubic.InOut).repeat(Infinity).start(),
+    );
   };
 }

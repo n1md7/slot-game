@@ -8,3 +8,51 @@
  * @type {number}
  */
 export const IgnoreStartSymbolCount = 3;
+
+/**
+ * @constant
+ * @type {'1xBAR'}
+ */
+export const BARx1 = '1xBAR';
+/**
+ * @constant
+ * @type {'2xBAR'}
+ */
+export const BARx2 = '2xBAR';
+/**
+ * @constant
+ * @type {'3xBAR'}
+ */
+export const BARx3 = '3xBAR';
+/**
+ * @constant
+ * @type {'Seven'}
+ */
+export const Seven = 'Seven';
+/**
+ * @constant
+ * @type {'Cherry'}
+ */
+export const Cherry = 'Cherry';
+
+/**
+ * @constant
+ * @type {'AnyBar'}
+ */
+export const AnyBar = 'AnyBar';
+/**
+ * @constant
+ * @type {'AllSame'}
+ */
+export const AllSame = 'AllSame';
+/**
+ * @constant
+ * @type {'CherryOrSeven'}
+ */
+export const CherryOrSeven = 'CherryOrSeven';
+
+export const LineOne = 0;
+export const LineTwo = 1;
+export const LineThree = 2;
+export const LineFour = 3;
+export const LineFive = 4;

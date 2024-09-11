@@ -2,6 +2,7 @@ import { AssetLoader } from './loader.mjs';
 import { Slot } from './slot.mjs';
 import { Engine } from './engine.mjs';
 import { createOption } from './utils.mjs';
+import { BARx1, BARx2, BARx3, Cherry, Seven } from './constants.js';
 
 /**
  * @import {ReelSymbols} from './reel.mjs';
@@ -50,11 +51,11 @@ assetLoader.onLoadFinish((assets) => {
    * @type {ReelSymbols}
    */
   const symbols = {
-    '1xBAR': assets.find(({ name }) => name === '1xBAR').img,
-    '2xBAR': assets.find(({ name }) => name === '2xBAR').img,
-    '3xBAR': assets.find(({ name }) => name === '3xBAR').img,
-    Seven: assets.find(({ name }) => name === 'Seven').img,
-    Cherry: assets.find(({ name }) => name === 'Cherry').img,
+    [BARx1]: assets.find(({ name }) => name === BARx1).img,
+    [BARx2]: assets.find(({ name }) => name === BARx2).img,
+    [BARx3]: assets.find(({ name }) => name === BARx3).img,
+    [Seven]: assets.find(({ name }) => name === Seven).img,
+    [Cherry]: assets.find(({ name }) => name === Cherry).img,
   };
 
   const slot = new Slot({
@@ -65,8 +66,8 @@ assetLoader.onLoadFinish((assets) => {
       border: '#293434',
     },
     reel: {
-      rows: 2,
-      cols: 3,
+      rows: 3,
+      cols: 5,
       animationTime: 1000,
       padding: {
         x: 1,

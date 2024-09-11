@@ -29,7 +29,6 @@
  * @property {number} color.r - Red color value
  * @property {number} color.g - Green color value
  * @property {number} color.b - Blue color value
- * @property {number} [rotate = 0] - Slot block rotation
  */
 
 /**
@@ -124,4 +123,12 @@
 
 /**
  * @typedef {'fixed'|'random'} Mode - Slot mode
+ */
+
+/**
+ * @typedef {Object} WinnerType - Slot winner combination
+ * @property {'AllSame' | 'CherryOrSeven' | 'AnyBar'} type - Winner symbol
+ * @property {number} rowIndex - Winner row(visible) index
+ * @property {number} money - Winner money
+ * @property {BlockType[]} blocks - Winner blocks
  */

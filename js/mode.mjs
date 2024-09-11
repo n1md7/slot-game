@@ -68,9 +68,7 @@ export function RandomMode(reel) {
 
       reel.animations.add(animation);
 
-      const { block } = reel.options;
-
-      block.rotate = 0;
+      const block = { ...reel.options.block }; // Copy the block options
       block.color = hexToObject(reel.options.color.background);
 
       return {

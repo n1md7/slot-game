@@ -1,6 +1,8 @@
 import { Reel } from './reel.mjs';
-import { createEmptyArray } from './utils.mjs';
+import { createEmptyArray, waitFor } from './utils.mjs';
 import { Calculator } from './calculator.mjs';
+import { AllSame, AnyBar, CherryOrSeven } from './constants.js';
+import { payTable } from './pay-table.mjs';
 
 /**
  * import { ReelOptions, ReelSymbols, ColorOptions, BlockOptions, PaddingOptions, Mode } from './types.mjs';
@@ -43,6 +45,12 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
    * @type {boolean}
    */
   this.isSpinning = false;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.checking = false;
 
   /**
    * @public
@@ -98,13 +106,11 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
    * @readonly
    */
   this.spin = () => {
-    if (this.isSpinning) return;
+    if (this.isSpinning || this.checking) return;
 
     this.reels.forEach((reel) => reel.spin());
 
-    setTimeout(() => {
-      this.calculator.calculate(this.reels);
-    }, reel.animationTime);
+    waitFor(reel.animationTime).then(() => this.evaluateWin());
   };
 
   /**
@@ -117,6 +123,49 @@ export function Slot({ mode, canvas, color, block, symbols, reel }) {
 
     for (const reel of this.reels) {
       reel.update(time);
+    }
+  };
+
+  /**
+   * @private
+   * @readonly
+   */
+  this.evaluateWin = () => {
+    this.checking = true;
+
+    const winners = this.calculator.calculate(this.reels);
+
+    if (!winners.length) {
+      this.checking = false;
+      return;
+    }
+
+    console.group('Winners');
+    const totalWin = winners.reduce((acc, { money }) => acc + money, 0);
+    for (const winner of winners) {
+      // We have a winner, let's highlight the blocks
+      this.highlightBlocks(winner.blocks);
+
+      console.info(`Winner: ${winner.type}, line: ${winner.rowIndex}, money: ${winner.money}`);
+    }
+
+    console.info(`Total win: ${totalWin}`);
+    console.groupEnd();
+
+    // Let's keep user from spinning again while we are highlighting the blocks
+    // We add a short delay to make the animation more visible and clear that the user won
+    waitFor(reel.animationTime / 2).then(() => {
+      this.checking = false;
+    });
+  };
+
+  /**
+   * @private
+   * @param {BlockType[]} blocks
+   */
+  this.highlightBlocks = (blocks) => {
+    for (const [reelIndex, { block }] of blocks.entries()) {
+      this.reels[reelIndex].highlightBlock(block);
     }
   };
 }

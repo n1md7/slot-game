@@ -1,10 +1,19 @@
-import { Easing, Tween } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
-
 /**
- * import { Tween, Group, Easing, BlockType, ReelSymbol } from './types.mjs';
+ * import { Tween, Group, Easing, BlockType, ReelSymbol, WinnerType } from './types.mjs';
  * import { Reel } from './reel.mjs';
  */
-import { IgnoreStartSymbolCount } from './constants.js';
+import {
+  AllSame,
+  AnyBar,
+  BARx1,
+  BARx2,
+  BARx3,
+  Cherry,
+  CherryOrSeven,
+  IgnoreStartSymbolCount,
+  Seven,
+} from './constants.js';
+import { payTable } from './pay-table.mjs';
 
 /**
  * Slot Calculator class. It's responsible for calculating the slot results
@@ -50,29 +59,42 @@ export function Calculator() {
    * @readonly
    * @public
    * @param {Reel[]} reels
+   * @returns {WinnerType[]}
    */
   this.calculate = (reels) => {
-    const rows = this.getVisibleBlocks(reels);
-    for (const [rowIndex, blocks] of rows.entries()) {
-      const winnerSymbol = this.checker.allSymbolsMatch(blocks);
+    /**
+     * @description Winning combinations
+     * @type {WinnerType[]}
+     */
+    const winners = [];
 
-      if (winnerSymbol) {
-        console.info('Winner symbol:', winnerSymbol);
-        for (const [reelIndex, { block }] of blocks.entries()) {
-          reels[reelIndex].animations.removeAll();
-          block.color.r = 0;
-          block.color.g = 0;
-          block.color.b = 0;
-          reels[reelIndex].animations.add(
-            new Tween(block.color)
-              .to({ r: 255, g: 255, b: 255 }, 300)
-              .easing(Easing.Cubic.InOut)
-              .repeat(Infinity)
-              .start(),
-          );
+    for (const [rowIndex, blocks] of this.getVisibleBlocks(reels).entries()) {
+      const allSymbolsMatch = this.checker.allSymbolsMatch(blocks);
+      const cherryOrSevenMatch = this.checker.cherryOrSevenCombination(blocks);
+      const anyBarMatch = this.checker.anyBarCombination(blocks);
+
+      switch (true) {
+        case allSymbolsMatch: {
+          const symbol = blocks.at(0).symbol;
+          const money = payTable[AllSame][symbol][rowIndex];
+
+          winners.push({ type: AllSame, rowIndex, blocks, money });
+          break;
+        }
+        case cherryOrSevenMatch: {
+          const money = payTable[CherryOrSeven][rowIndex];
+          winners.push({ type: CherryOrSeven, rowIndex, blocks, money });
+          break;
+        }
+        case anyBarMatch: {
+          const money = payTable[AnyBar][rowIndex];
+          winners.push({ type: AnyBar, rowIndex, blocks, money });
+          break;
         }
       }
     }
+
+    return winners;
   };
 }
 
@@ -81,13 +103,27 @@ function Checker() {
    * @description Check if all symbols match. If they do, return the symbol type otherwise null
    * @param {BlockType} first
    * @param {BlockType[]} blocks
-   * @returns {null | ReelSymbol }
+   * @returns {boolean}
    */
   this.allSymbolsMatch = ([first, ...blocks]) => {
-    const match = blocks.every((block) => block.symbol === first.symbol);
+    return blocks.every((block) => block.symbol === first.symbol);
+  };
 
-    if (!match) return null;
+  /**
+   * @description Check if any bar combination is present
+   * @param {BlockType[]} blocks
+   * @returns {boolean}
+   */
+  this.anyBarCombination = (blocks) => {
+    return blocks.every((block) => [BARx1, BARx2, BARx3].includes(block.symbol));
+  };
 
-    return first.symbol;
+  /**
+   * @description Check if cherry or seven combination is present
+   * @param {BlockType[]} blocks
+   * @returns {boolean}
+   */
+  this.cherryOrSevenCombination = (blocks) => {
+    return blocks.every((block) => [Cherry, Seven].includes(block.symbol));
   };
 }
