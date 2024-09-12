@@ -111,17 +111,6 @@
  */
 
 /**
- * @typedef {Function} ModeStrategy - Slot mode strategy
- * @param {Object} options - Mode options
- * @param {Reel} options.reel - Reel instance
- *
- * @method genReelSymbols - Generate reel symbols
- * @returns {void}
- *
- * @constructor
- */
-
-/**
  * @typedef {'fixed'|'random'} Mode - Slot mode
  */
 
@@ -140,5 +129,6 @@
  * @property {ColorOptions} color - Slot colors
  * @property {BlockOptions} block - Slot block options
  * @property {ReelSymbols} symbols - Slot symbols object
+ * @property {ReelSymbol[]} [fixedSymbols=[]] - Slot fixed symbols array, for fixed mode
  * @property {ReelOptions} reel - Slot reels
  */

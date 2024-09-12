@@ -21,6 +21,7 @@ import { IgnoreStartSymbolCount } from './constants.js';
  * @param {BlockOptions} options.block - Reel block options
  * @param {PaddingOptions} options.padding - Reel block padding
  * @param {ReelSymbols} options.symbols - Slot symbols object
+ * @param {ReelSymbol[]} options.fixedSymbols - Slot fixed symbols array, for fixed mode
  *
  * @constructor
  */
@@ -32,16 +33,10 @@ export function Reel(options) {
   this.options = options;
 
   /**
-   * @redonly
-   * @private
-   */
-  this.modes = new Modes(this, options.mode);
-
-  /**
    * @private
    * @readonly
    */
-  this.mode = this.modes.getCurrent();
+  this.mode = new Modes(this);
 
   /**
    * @private
@@ -110,7 +105,7 @@ export function Reel(options) {
    */
   this.reset = () => {
     this.animations.removeAll();
-    this.mode.genReelSymbols();
+    this.mode.genByMode(options.mode);
     this.drawBlocks();
     this.isSpinning = false;
   };

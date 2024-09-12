@@ -13,6 +13,8 @@ import { Effects } from './effects.mjs';
  * @constructor
  */
 export function Slot(options) {
+  options.fixedSymbols ||= [];
+
   /**
    * @public
    * @readonly
@@ -20,13 +22,11 @@ export function Slot(options) {
    */
   this.options = options;
 
-  const { mode, canvas, color, block, symbols, reel } = this.options;
-
   /**
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.ctx = canvas.getContext('2d');
+  this.ctx = options.canvas.getContext('2d');
 
   /**
    * @private
@@ -66,14 +66,17 @@ export function Slot(options) {
    * @readonly
    * @return {number}
    */
-  this.getWidth = () => block.width * reel.cols + reel.padding.x * 2 + block.lineWidth * (reel.cols - 1);
+  this.getWidth = () =>
+    options.block.width * options.reel.cols +
+    options.reel.padding.x * 2 +
+    options.block.lineWidth * (options.reel.cols - 1);
 
   /**
    * @private
    * @readonly
    * @return {number}
    */
-  this.getHeight = () => block.height * reel.rows;
+  this.getHeight = () => options.block.height * options.reel.rows;
 
   /**
    * @private
@@ -82,7 +85,7 @@ export function Slot(options) {
    * @readonly
    */
   this.paintBackground = () => {
-    this.ctx.fillStyle = color.background;
+    this.ctx.fillStyle = options.color.background;
     this.ctx.fillRect(0, 0, this.getWidth(), this.getHeight());
   };
 
@@ -103,7 +106,7 @@ export function Slot(options) {
 
     this.reels.forEach((reel) => reel.spin());
 
-    waitFor(reel.animationTime).then(() => this.evaluateWin());
+    waitFor(options.reel.animationTime).then(() => this.evaluateWin());
   };
 
   /**
@@ -146,7 +149,7 @@ export function Slot(options) {
 
     // Let's keep user from spinning again while we are highlighting the blocks
     // We add a short delay to make the animation more visible and clear that the user won
-    waitFor(reel.animationTime / 2).then(() => {
+    waitFor(options.reel.animationTime / 2).then(() => {
       this.checking = false;
     });
   };
@@ -159,18 +162,19 @@ export function Slot(options) {
     this.reels.length = 0; // Clear the reels without creating a new array
     this.paintBackground();
 
-    createEmptyArray(reel.cols).forEach((index) => {
+    createEmptyArray(options.reel.cols).forEach((index) => {
       this.reels.push(
         new Reel({
           ctx: this.ctx,
           height: this.getHeight(),
-          padding: reel.padding,
-          animationTime: reel.animationTime,
-          rows: reel.rows,
-          block,
-          mode,
-          color,
-          symbols,
+          padding: options.reel.padding,
+          animationTime: options.reel.animationTime,
+          rows: options.reel.rows,
+          block: options.block,
+          mode: options.mode,
+          color: options.color,
+          symbols: options.symbols,
+          fixedSymbols: options.fixedSymbols,
           index,
         }),
       );

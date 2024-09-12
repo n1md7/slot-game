@@ -67,7 +67,7 @@ export function Calculator(reels) {
      */
     const winners = [];
 
-    for (const [rowIndex, blocks] of this.getVisibleBlocks(reels).entries()) {
+    for (const [rowIndex, blocks] of this.getVisibleBlocks().entries()) {
       const allSymbolsMatch = this.checker.allSymbolsMatch(blocks);
       const cherryOrSevenMatch = this.checker.cherryOrSevenCombination(blocks);
       const anyBarMatch = this.checker.anyBarCombination(blocks);

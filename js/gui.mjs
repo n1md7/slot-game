@@ -1,8 +1,9 @@
 import GUI from 'https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm';
-import { ModeFixed, ModeRandom } from './constants.js';
+import { BARx1, BARx2, BARx3, Cherry, ModeFixed, ModeRandom, Seven } from './constants.js';
 import { Slot } from './slot.mjs';
 
 export const gui = new GUI();
+const symbols = { Random: '', BARx1: BARx1, BARx2, BARx3, Seven, Cherry };
 
 /**
  * @param {Slot} slot
@@ -10,15 +11,10 @@ export const gui = new GUI();
  * @returns {void}
  */
 export const configureGUI = (slot, engine) => {
-  const actions = {
-    Reset() {
-      gui.reset();
-      slot.reset();
-    },
-  };
-
   gui.title('Slot Machine');
   gui.add(slot.options, 'mode', { Random: ModeRandom, Fixed: ModeFixed });
+  const fixed = gui.addFolder('Fixed symbols');
+  if (slot.options.mode === ModeRandom) fixed.hide();
   gui.add(engine.options, 'FPS', 6, 60, 1);
 
   const reel = gui.addFolder('Reel configuration', slot.options.reel);
@@ -34,9 +30,30 @@ export const configureGUI = (slot, engine) => {
   block.add(slot.options.block, 'lineWidth', 0, 4, 1);
   block.add(slot.options.block, 'padding', 0, 48, 1);
 
+  const actions = {
+    Reset() {
+      gui.reset();
+      slot.reset();
+    },
+  };
+
   gui.add(actions, 'Reset');
 
-  gui.onFinishChange(() => {
+  gui.onFinishChange(({ property }) => {
+    if (slot.options.mode === ModeFixed) {
+      fixed.show();
+      if (property === 'mode') addFixedOptions();
+      if (property === 'rows') addFixedOptions();
+    } else {
+      fixed.hide();
+    }
+
     slot.reset();
   });
+
+  function addFixedOptions() {
+    for (let i = fixed.children.length; i < slot.options.reel.rows; i++) {
+      fixed.add(slot.options.fixedSymbols, i, symbols);
+    }
+  }
 };

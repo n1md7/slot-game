@@ -3,20 +3,18 @@ import { createEmptyArray, hexToObject } from './utils.mjs';
 import { IgnoreStartSymbolCount, ModeFixed, ModeRandom } from './constants.js';
 
 /**
- * import { ModeStrategy, Tween, Easing } from './types.mjs';
+ * import { Tween, Easing } from './types.mjs';
  * import { Reel } from './reel.mjs';
  */
 
 /**
- * @description Random mode strategy for generating reel symbols.
+ * @description Slot Modes class. It's responsible for the slot modes
  *
- * @class RandomMode
- * @implements {ModeStrategy}
- * @param {Reel} reel - Reel instance
+ * @class Modes
  *
  * @constructor
  */
-export function RandomMode(reel) {
+export function Modes(reel) {
   /**
    * @private
    * @readonly
@@ -31,7 +29,7 @@ export function RandomMode(reel) {
   };
 
   /**
-   * @public
+   * @private
    * @readonly
    * @returns {void}
    */
@@ -88,61 +86,27 @@ export function RandomMode(reel) {
     // Update the animation blocks
     reel.blocks = nextSymbols;
   };
-}
 
-/**
- * @description Fixed mode strategy for generating reel symbols.
- *
- * @class FixedMode
- * @implements {ModeStrategy}
- * @param {Reel} reel - Reel instance
- *
- * @constructor
- */
-export function FixedMode(reel) {
   /**
-   * @public
+   * @description Get fixed symbols from the reel options. We only replace the symbols that will be visible on the screen.
+   * @private
    * @readonly
-   * @returns {void}
    */
-  this.genReelSymbols = () => {
-    throw new Error('Not implemented');
+  this.getFixedSymbols = () => {
+    for (let i = 0; i <= reel.options.rows; i++) {
+      reel.blocks[IgnoreStartSymbolCount + i].symbol = reel.options.fixedSymbols[i] || this.getRandomSymbol();
+    }
   };
-}
-
-/**
- * @description Mode composition for slot machine.
- * @param {Reel} reel - Reel instance
- * @param {Mode} activeMode - Active mode
- *
- * @constructor
- */
-export function Modes(reel, activeMode) {
-  /**
-   * @readonly
-   * @private
-   */
-  this.fixed = new FixedMode(reel);
-
-  /**
-   * @readonly
-   * @private
-   */
-  this.random = new RandomMode(reel);
 
   /**
    * @public
    * @readonly
-   * @returns {RandomMode|FixedMode}
+   * @param {Mode} mode
    */
-  this.getCurrent = () => {
-    switch (activeMode) {
-      case ModeFixed:
-        return this.fixed;
-      case ModeRandom:
-        return this.random;
-      default:
-        throw new Error(`Mode ${activeMode} is not defined`);
+  this.genByMode = (mode) => {
+    this.genReelSymbols();
+    if (mode === ModeFixed) {
+      this.getFixedSymbols();
     }
   };
 }

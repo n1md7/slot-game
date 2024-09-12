@@ -41,3 +41,7 @@ div.modal-header {
   background-color: #000000de;
   color: white;
 }
+
+.lil-gui.autoPlace {
+  right: 0;
+}
