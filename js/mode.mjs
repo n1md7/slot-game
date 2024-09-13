@@ -1,6 +1,6 @@
 import { Tween } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
 import { IgnoreStartSymbolCount, ModeFixed } from './constants.js';
-import { createEmptyArray } from './utils.mjs';
+import { createEmptyArray, hexToObject } from './utils.mjs';
 
 /**
  * import { Tween, Easing } from './types.mjs';
@@ -67,7 +67,7 @@ export function Modes(reel) {
       reel.animations.add(animation);
 
       const block = { ...reel.options.block }; // Copy the block options
-      // block.color = hexToObject(reel.options.color.background, 16);
+      block.color = hexToObject(reel.options.color.background, 16);
 
       return {
         symbol,

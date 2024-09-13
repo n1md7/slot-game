@@ -49,8 +49,8 @@ export function Canvas(options) {
     options.ctx.lineWidth = block.lineWidth;
 
     if (block.color) {
-      const { r, g, b } = block.color;
-      options.ctx.fillStyle = `#${decToHex(r)}${decToHex(g)}${decToHex(b)}`;
+      const { r, g, b, a } = block.color;
+      options.ctx.fillStyle = `#${decToHex(r)}${decToHex(g)}${decToHex(b)}${decToHex(a)}`;
       options.ctx.fillRect(this.xOffset, yOffset, options.width, options.height);
     }
 

@@ -1,183 +1,38 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="viewport" content="width=480,initial-scale=1, maximum-scale=1" />
-    <title>SlotMachine</title>
-    <link rel="icon" href="./img/BAR.png" />
-    <link rel="stylesheet" type="text/css" href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
-    <link rel="stylesheet" type="text/css" href="./css/style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <h2 class="text-center text-light my-3 gold">Slot Game</h2>
-      <div class="row justify-content-center mb-3">
-        <div class="col col-auto">
-          <canvas id="slot" width="440" height="240"></canvas>
-        </div>
-      </div>
-      <div class="row justify-content-center mb-3">
-        <div class="col col-auto">
-          <button class="btn btn-secondary px-5" id="auto"><i class="fab fa-android"></i> AUTO (OFF)</button>
-          <button class="btn btn-danger px-5" id="max-bet"> MAX BET</button>
-          <button class="btn btn-success px-5" id="spin"><i class="fas fa-sync-alt"></i> SPIN</button>
-        </div>
-      </div>
-      <div class="row justify-content-center mb-3">
-        <div class="col col-auto">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Credits</span>
-            </div>
-            <input class="form-control" type="number" id="balance" min="1" max="5000" />
-            <div class="input-group-append">
-              <span class="input-group-text"><i class="fas fa-dollar-sign green"></i></span>
-            </div>
-          </div>
-        </div>
-        <div class="col col-auto">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">BETx</span>
-            </div>
-            <input class="form-control" type="number" id="bet" min="1" value="1" max="3" />
-            <div class="input-group-append">
-              <span class="input-group-text"><i class="fas fa-coins gold"></i></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row justify-content-center my-3">
-        <div class="col col-auto">
-          <button class="btn btn-primary w-auto" type="button" data-toggle="modal" data-target="#payTable">
-            <i class="fas fa-money-bill-alt"></i> Pay Table
-          </button>
-        </div>
-      </div>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="viewport" content="width=480,initial-scale=1, maximum-scale=1" />
+  <title>SlotMachine</title>
+  <link rel="icon" href="./img/BAR.png" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" />
+  <link rel="stylesheet" type="text/css" href="./css/style.css" />
+</head>
+<body>
+  <div class="game-container">
+    <!-- Winner Display -->
+    <div class="winner-display">
+      <span id="winnerText">Winner: $0</span>
     </div>
 
-    <!-- Paytable modal -->
-    <div
-      class="modal fade"
-      id="payTable"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="payTableTitle"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="payTableTitle">Pay Table</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <table class="table table-dark table-hover table-responsive">
-              <thead>
-                <tr>
-                  <td>Reel1</td>
-                  <td>Reel2</td>
-                  <td>Reel3</td>
-                  <td>TOP</td>
-                  <td>MIDDLE</td>
-                  <td>BOTTOM</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><img src="./img/Cherry.png" width="40" /></td>
-                  <td><img src="./img/Cherry.png" width="40" /></td>
-                  <td><img src="./img/Cherry.png" width="40" /></td>
-                  <td class="v-align">2000xBET</td>
-                  <td class="v-align">1000xBET</td>
-                  <td class="v-align">4000xBET</td>
-                </tr>
-                <tr>
-                  <td><img src="./img/Seven.png" width="40" /></td>
-                  <td><img src="./img/Seven.png" width="40" /></td>
-                  <td><img src="./img/Seven.png" width="40" /></td>
-                  <td class="v-align">150xBET</td>
-                  <td class="v-align">150xBET</td>
-                  <td class="v-align">150xBET</td>
-                </tr>
-                <tr>
-                  <td>
-                    <img src="./img/Seven.png" width="40" />
-                    <img src="./img/Cherry.png" width="40" />
-                  </td>
-                  <td>
-                    <img src="./img/Seven.png" width="40" />
-                    <img src="./img/Cherry.png" width="40" />
-                  </td>
-                  <td>
-                    <img src="./img/Seven.png" width="40" />
-                    <img src="./img/Cherry.png" width="40" />
-                  </td>
-                  <td class="v-align">75xBET</td>
-                  <td class="v-align">75xBET</td>
-                  <td class="v-align">75xBET</td>
-                </tr>
-                <tr>
-                  <td><img src="./img/3xBAR.png" width="40" /></td>
-                  <td><img src="./img/3xBAR.png" width="40" /></td>
-                  <td><img src="./img/3xBAR.png" width="40" /></td>
-                  <td class="v-align">50xBET</td>
-                  <td class="v-align">50xBET</td>
-                  <td class="v-align">50xBET</td>
-                </tr>
-                <tr>
-                  <td><img src="./img/2xBAR.png" width="40" /></td>
-                  <td><img src="./img/2xBAR.png" width="40" /></td>
-                  <td><img src="./img/2xBAR.png" width="40" /></td>
-                  <td class="v-align">20xBET</td>
-                  <td class="v-align">20xBET</td>
-                  <td class="v-align">20xBET</td>
-                </tr>
-                <tr>
-                  <td><img src="./img/BAR.png" width="40" /></td>
-                  <td><img src="./img/BAR.png" width="40" /></td>
-                  <td><img src="./img/BAR.png" width="40" /></td>
-                  <td class="v-align">10xBET</td>
-                  <td class="v-align">10xBET</td>
-                  <td class="v-align">10xBET</td>
-                </tr>
-                <tr>
-                  <td>
-                    <img src="./img/BAR.png" width="40" />
-                    <img src="./img/2xBAR.png" width="40" />
-                    <img src="./img/3xBAR.png" width="40" />
-                  </td>
-                  <td>
-                    <img src="./img/BAR.png" width="40" />
-                    <img src="./img/2xBAR.png" width="40" />
-                    <img src="./img/3xBAR.png" width="40" />
-                  </td>
-                  <td>
-                    <img src="./img/BAR.png" width="40" />
-                    <img src="./img/2xBAR.png" width="40" />
-                    <img src="./img/3xBAR.png" width="40" />
-                  </td>
-                  <td class="v-align">5xBET</td>
-                  <td class="v-align">5xBET</td>
-                  <td class="v-align">5xBET</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script type="module" src="./js/main.mjs"></script>
+    <!-- Canvas Placeholder -->
+    <canvas id="slot" width="440" height="240"></canvas>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  </body>
+    <!-- Credits Display -->
+    <div class="credits-display">
+      <span id="creditsText">Credits: $1000</span>
+    </div>
+
+    <!-- Button Controls -->
+    <div class="controls">
+      <button class="control-btn" id="maxBetBtn">Max Bet</button>
+      <button class="control-btn" id="increaseBetBtn">Increase Bet</button>
+      <button class="control-btn" id="decreaseBetBtn">Decrease Bet</button>
+      <button class="control-btn" id="spin">Spin</button>
+      <button class="control-btn" id="auto">Auto Spin</button>
+    </div>
+  </div>
+  <script type="module" src="./js/main.mjs"></script>
+</body>
 </html>

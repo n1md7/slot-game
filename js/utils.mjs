@@ -11,7 +11,7 @@ export function createEmptyArray(length) {
  * @description Convert hex color value to object
  * @param {string} hexValue
  * @param {number} radix
- * @returns {{r: number, b: number, g: number}}
+ * @returns {{r: number, b: number, g: number, a: number}}
  */
 export function hexToObject(hexValue, radix = 10) {
   if (!hexValue.startsWith('#')) {
@@ -22,6 +22,7 @@ export function hexToObject(hexValue, radix = 10) {
     r: parseInt(hexValue.slice(1, 3), radix),
     g: parseInt(hexValue.slice(3, 5), radix),
     b: parseInt(hexValue.slice(5, 7), radix),
+    a: parseInt(hexValue.slice(7, 9), radix) || 255,
   };
 }
 

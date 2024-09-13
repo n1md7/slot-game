@@ -20,16 +20,7 @@ const config = {
     btn: {
       spin: document.querySelector('#spin'),
       auto: document.querySelector('#auto'),
-      checkout: document.querySelector('#checkout'),
     },
-    select: {
-      mode: document.querySelector('#mode'),
-      line: document.querySelector('#where'),
-      symbol: document.querySelector('#what'),
-    },
-    balance: document.querySelector('#balance'),
-    bet: document.querySelector('#bet'),
-    win: document.querySelector('#cwin'),
   },
 };
 
