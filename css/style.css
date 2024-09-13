@@ -19,9 +19,10 @@
 }
 
 body {
-  background: rgb(21, 21, 21) !important;
+  background: url("../img/background.webp");
   width: 100%;
   height: 100%;
+  backdrop-filter: blur(10px);
 }
 
 .gold {
@@ -42,6 +43,11 @@ div.modal-header {
   color: white;
 }
 
-.lil-gui.autoPlace {
-  right: 0;
+.lil-gui {
+  --background-color: #000000A0;
+  --text-color: white;
+  --title-background-color: #000000D3;
+  --title-text-color: white;
 }
+
+.lil-gui.autoPlace {}

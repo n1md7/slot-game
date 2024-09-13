@@ -1,4 +1,4 @@
-import { Group, Tween, Easing } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
+import { Group } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
 import { Canvas } from './canvas.mjs';
 import { Modes } from './mode.mjs';
 import { IgnoreStartSymbolCount } from './constants.js';
@@ -16,6 +16,7 @@ import { IgnoreStartSymbolCount } from './constants.js';
  * @param {CanvasRenderingContext2D } options.ctx - Canvas rendering context
  * @param {number} options.index - Reel index, 0, 1, 2 required for the X offset calculation
  * @param {number} options.animationTime - Reel animation time in milliseconds
+ * @param {Function} options.animationFunction - Reel animation easing function
  * @param {number} options.rows - Slot reels rows
  * @param {ColorOptions} options.color - Reel colors
  * @param {BlockOptions} options.block - Reel block options

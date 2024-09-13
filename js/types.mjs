@@ -47,6 +47,7 @@
  * @property {number} rows - Slot reels rows
  * @property {number} cols - Slot reels columns
  * @property {number} animationTime - Slot reels animation time in milliseconds
+ * @property {Function} animationFunction - Slot reels animation easing function
  * @property {PaddingOptions} padding - Slot padding
  */
 

@@ -169,6 +169,7 @@ export function Slot(options) {
           height: this.getHeight(),
           padding: options.reel.padding,
           animationTime: options.reel.animationTime,
+          animationFunction: options.reel.animationFunction,
           rows: options.reel.rows,
           block: options.block,
           mode: options.mode,

@@ -1,7 +1,8 @@
+import { BARx1, BARx2, BARx3, Cherry, ModeRandom, Seven } from './constants.js';
+import { Easing } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
 import { AssetLoader } from './loader.mjs';
 import { Slot } from './slot.mjs';
 import { Engine } from './engine.mjs';
-import { BARx1, BARx2, BARx3, Cherry, ModeRandom, Seven } from './constants.js';
 import { configureGUI } from './gui.mjs';
 
 /**
@@ -65,6 +66,7 @@ assetLoader.onLoadFinish((assets) => {
       rows: 3,
       cols: 4,
       animationTime: 1000,
+      animationFunction: Easing.Back.Out,
       padding: {
         x: 1,
       },

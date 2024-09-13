@@ -15,6 +15,7 @@ export function Effects(reels) {
    * @param {number} reelIndex
    */
   this.highlightBlock = (block, reelIndex) => {
+    block.color = { r: 0, g: 0, b: 0 };
     reels[reelIndex].animations.add(
       new Tween(block.color).to({ r: 255, g: 255, b: 255 }, 300).easing(Easing.Cubic.InOut).repeat(Infinity).start(),
     );

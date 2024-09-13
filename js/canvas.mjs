@@ -44,12 +44,16 @@ export function Canvas(options) {
     const padding = block.padding + block.lineWidth;
     const symbolWidth = block.width - padding * 2;
     const symbolHeight = block.height - padding * 2;
-    const { r, g, b } = block.color;
 
     options.ctx.strokeStyle = options.color.border;
     options.ctx.lineWidth = block.lineWidth;
-    options.ctx.fillStyle = `#${decToHex(r)}${decToHex(g)}${decToHex(b)}`;
-    options.ctx.fillRect(this.xOffset, yOffset, options.width, options.height);
+
+    if (block.color) {
+      const { r, g, b } = block.color;
+      options.ctx.fillStyle = `#${decToHex(r)}${decToHex(g)}${decToHex(b)}`;
+      options.ctx.fillRect(this.xOffset, yOffset, options.width, options.height);
+    }
+
     options.ctx.drawImage(
       options.symbols[symbol],
       this.xOffset + padding,
