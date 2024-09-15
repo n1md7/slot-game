@@ -51,7 +51,7 @@ assetLoader.onLoadFinish((assets) => {
     mode: ModeRandom,
     color: {
       background: '#313030',
-      border: '#2b2b2b',
+      border: '#FFFFFF',
     },
     reel: {
       rows: 3,
