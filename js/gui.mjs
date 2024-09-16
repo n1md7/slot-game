@@ -31,6 +31,13 @@ const functions = {
  */
 export const configureGUI = (slot, engine) => {
   gui.title('Slot Machine');
+  const player = gui.addFolder('Player', slot.player);
+  player.add(slot.options.player, 'credits', 0, 1024, 1);
+  player.add(slot.options.player, 'bet', 1, slot.options.player.MAX_BET, 1);
+  player.onFinishChange(() => {
+    slot.player.onUpdate(slot.options.player.credits, slot.options.player.bet);
+  });
+
   gui.add(slot.options, 'mode', { Random: ModeRandom, Fixed: ModeFixed });
   const fixed = gui.addFolder('Fixed symbols');
   if (slot.options.mode === ModeRandom) fixed.hide();

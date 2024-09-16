@@ -18,8 +18,15 @@ const config = {
      */
     canvas: document.querySelector('#slot'),
     btn: {
-      spin: document.querySelector('#spin'),
-      auto: document.querySelector('#auto'),
+      spinManual: document.querySelector('#spin-manual'),
+      spinAuto: document.querySelector('#spin-auto'),
+      minusBet: document.querySelector('#minus-bet'),
+      plusBet: document.querySelector('#plus-bet'),
+    },
+    text: {
+      credits: document.querySelector('#credits'),
+      bet: document.querySelector('#bet'),
+      winAmount: document.querySelector('#win-amount'),
     },
   },
 };
@@ -47,10 +54,15 @@ assetLoader.onLoadFinish((assets) => {
   };
 
   const slot = new Slot({
+    player: {
+      credits: 64,
+      bet: 1,
+      MAX_BET: 15,
+    },
     canvas: config.ui.canvas,
     mode: ModeRandom,
     color: {
-      background: '#313030',
+      background: '#061a37',
       border: '#FFFFFF',
     },
     reel: {
@@ -66,17 +78,41 @@ assetLoader.onLoadFinish((assets) => {
       width: 141,
       height: 121,
       lineWidth: 0,
-      padding: 4,
+      padding: 16,
     },
     symbols,
   });
+
+  const addHighlightWinAmount = () => {
+    config.ui.text.winAmount.parentElement.classList.add('highlight');
+  };
+  const removeHighlightWinAmount = () => {
+    config.ui.text.winAmount.parentElement.classList.remove('highlight');
+  };
 
   slot.updateCanvasSize();
 
   const engine = new Engine(slot, { FPS: 60 });
 
   // Bind events
-  config.ui.btn.spin.onclick = () => slot.spin();
+  config.ui.btn.spinManual.onclick = () => {
+    slot.spin();
+    removeHighlightWinAmount();
+    slot.player.onWin(0); // Reset win amount
+  };
+  // config.ui.btn.spinAuto.onclick = () => engine.toggleAutoSpin();
+  config.ui.btn.minusBet.onclick = () => slot.player.decBet();
+  config.ui.btn.plusBet.onclick = () => slot.player.incBet();
+
+  slot.player.onUpdate = (credits, bet) => {
+    config.ui.text.credits.textContent = `$${credits}`;
+    config.ui.text.bet.textContent = `$${bet}`;
+  };
+  slot.player.onWin = (amount) => {
+    if (amount > 0) addHighlightWinAmount(amount);
+    config.ui.text.winAmount.textContent = `$${amount}`;
+  };
+  slot.player.initialize();
 
   engine.start();
 

@@ -124,8 +124,16 @@
  */
 
 /**
+ * @typedef {Object} PlayerOptions - Player options
+ * @property {number} credits - Player money
+ * @property {number} bet - Player bet
+ * @property {number} [MAX_BET = 15] - Player max bet
+ */
+
+/**
  * @typedef {Object} SlotOptions - Slot options
  * @property {HTMLCanvasElement} canvas - Canvas instance
+ * @property {PlayerOptions} player - Player options
  * @property {Mode} mode - Slot mode
  * @property {ColorOptions} color - Slot colors
  * @property {BlockOptions} block - Slot block options

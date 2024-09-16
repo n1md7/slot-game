@@ -2,6 +2,7 @@ import { Reel } from './reel.mjs';
 import { createEmptyArray, waitFor } from './utils.mjs';
 import { Calculator } from './calculator.mjs';
 import { Effects } from './effects.mjs';
+import { Player } from './player.mjs';
 
 /**
  * import { ReelOptions, ReelSymbols, ColorOptions, BlockOptions, PaddingOptions, Mode, SlotOptions } from './types.mjs';
@@ -21,6 +22,13 @@ export function Slot(options) {
    * @type {SlotOptions}
    */
   this.options = options;
+
+  /**
+   * @public
+   * @readonly
+   * @type {Player}
+   */
+  this.player = new Player(options.player);
 
   /**
    * @private
@@ -102,8 +110,10 @@ export function Slot(options) {
    * @readonly
    */
   this.spin = () => {
+    if (!this.player.hasEnoughCredits()) return;
     if (this.isSpinning || this.checking) return;
 
+    this.player.subtractSpinCost();
     this.reels.forEach((reel) => reel.spin());
 
     waitFor(options.reel.animationTime).then(() => this.evaluateWin());
@@ -132,8 +142,7 @@ export function Slot(options) {
     const winners = this.calculator.calculate();
 
     if (!winners.length) {
-      this.checking = false;
-      return;
+      return (this.checking = false);
     }
 
     console.group('Winners');
@@ -143,6 +152,8 @@ export function Slot(options) {
       this.effects.highlight(winner.blocks);
       console.info(`Winner: ${winner.type}, line: ${winner.rowIndex}, money: ${winner.money}`);
     }
+
+    this.player.addWin(totalWin);
 
     console.info(`Total win: ${totalWin}`);
     console.groupEnd();

@@ -15,8 +15,8 @@
 <body>
   <div class="game-container">
     <!-- Winner Display -->
-    <div class="winner-display blink mb-3">
-      <span id="winnerText">WIN: $1000</span>
+    <div class="winner-display mb-3">
+      <span>WIN: <span id="win-amount">$</span></span>
     </div>
 
     <!-- Canvas Placeholder -->
@@ -25,14 +25,14 @@
     <!-- Button Controls -->
     <div class="controls d-flex w-100 justify-content-between align-items-end px-1 mt-3">
       <div class="text-warning left d-flex flex-column align-items-start justify-content-between h-100">
-        <span>Credit: <span class="credit text-white">$400</span></span>
-        <span>Bet:<span class="bet text-white"> $10</span></span>
+        <span>Credit: <span id="credits" class="credit text-white">$400</span></span>
+        <span>Bet:<span id="bet" class="bet text-white">$10</span></span>
       </div>
       <div class="middle d-flex align-items-end justify-content-between">
         <button id="minus-bet" class="bet-action-btn">
           <i class="fas fa-minus"></i>
         </button>
-        <button class="align-items-center d-flex gap-1" id="spin">
+        <button class="align-items-center d-flex gap-2" id="spin-manual">
           <i class="fas fa-sync-alt"></i>
           <b>SPIN</b>
         </button>
@@ -45,7 +45,7 @@
           <i class="fas fa-table"></i>
           <b>Pay Table</b>
         </button>
-        <button class="align-items-center control-btn d-flex gap-1" id="auto-spin">
+        <button class="align-items-center control-btn d-flex gap-1" id="spin-auto">
           <i class="fas fa-play"></i>
           <b>AUTO</b>
         </button>
