@@ -131,6 +131,13 @@
  */
 
 /**
+ * @typedef {Object} AudioVolume - Audio volume options
+ * @property {number} background - Background audio volume
+ * @property {number} win - Win audio volume
+ * @property {number} spin - Spin audio volume
+ */
+
+/**
  * @typedef {Object} SlotOptions - Slot options
  * @property {HTMLCanvasElement} canvas - Canvas instance
  * @property {PlayerOptions} player - Player options
@@ -140,4 +147,5 @@
  * @property {ReelSymbols} symbols - Slot symbols object
  * @property {ReelSymbol[]} [fixedSymbols=[]] - Slot fixed symbols array, for fixed mode
  * @property {ReelOptions} reel - Slot reels
+ * @property {AudioVolume} volume - Slot audio volume
  */

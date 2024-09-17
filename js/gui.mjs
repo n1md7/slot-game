@@ -29,7 +29,7 @@ const functions = {
  * @param {Engine} engine
  * @returns {void}
  */
-export const configureGUI = (slot, engine) => {
+export const configureTweakPane = (slot, engine) => {
   gui.title('Slot Machine');
   const player = gui.addFolder('Player', slot.player);
   player.add(slot.options.player, 'credits', 0, 1024, 1);
@@ -51,12 +51,25 @@ export const configureGUI = (slot, engine) => {
   animation.add(slot.options.reel, 'animationFunction', functions);
 
   const block = gui.addFolder('Block configuration', slot.options.block);
-  block.addColor(slot.options.color, 'background');
+  block.addColor(slot.options.color, 'background').onChange(() => slot.reset());
   block.addColor(slot.options.color, 'border');
   block.add(slot.options.block, 'width', 16, 256, 8);
   block.add(slot.options.block, 'height', 16, 256, 8);
   block.add(slot.options.block, 'lineWidth', 0, 4, 1);
   block.add(slot.options.block, 'padding', 0, 48, 1);
+
+  const volume = gui.addFolder('Audio Volume', slot.options.volume);
+  volume.add(slot.options.volume, 'background', 0, 1, 0.1);
+  volume.add(slot.options.volume, 'win', 0, 1, 0.1);
+  volume.add(slot.options.volume, 'spin', 0, 1, 0.1);
+  volume.onFinishChange(({ property }) => {
+    if (slot.soundEffects[property]) {
+      slot.soundEffects[property].setVolume(slot.options.volume[property]);
+    }
+    if (property === 'background') {
+      slot.backgroundMusic.mainTrack.setVolume(slot.options.volume[property]);
+    }
+  });
 
   const actions = {
     Reset() {

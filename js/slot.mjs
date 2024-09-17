@@ -1,8 +1,10 @@
 import { Reel } from './reel.mjs';
 import { createEmptyArray, waitFor } from './utils.mjs';
 import { Calculator } from './calculator.mjs';
-import { Effects } from './effects.mjs';
+import { VisualEffects } from './visual-effects.mjs';
 import { Player } from './player.mjs';
+import { SoundEffects } from './sound-effects.mjs';
+import { BackgroundMusic } from './background-music.mjs';
 
 /**
  * import { ReelOptions, ReelSymbols, ColorOptions, BlockOptions, PaddingOptions, Mode, SlotOptions } from './types.mjs';
@@ -31,6 +33,20 @@ export function Slot(options) {
   this.player = new Player(options.player);
 
   /**
+   * @public
+   * @readonly
+   * @type {SoundEffects}
+   */
+  this.soundEffects = new SoundEffects({ animationTime: options.reel.animationTime });
+
+  /**
+   * @public
+   * @readonly
+   * @type {BackgroundMusic}
+   */
+  this.backgroundMusic = new BackgroundMusic();
+
+  /**
    * @private
    * @type {CanvasRenderingContext2D}
    */
@@ -46,9 +62,9 @@ export function Slot(options) {
   /**
    * @private
    * @readonly
-   * @type {Effects}
+   * @type {VisualEffects}
    */
-  this.effects = new Effects(this.reels);
+  this.visualEffects = new VisualEffects(this.reels);
 
   /**
    * @private
@@ -113,6 +129,7 @@ export function Slot(options) {
     if (!this.player.hasEnoughCredits()) return;
     if (this.isSpinning || this.checking) return;
 
+    this.soundEffects.spin.play();
     this.player.subtractSpinCost();
     this.reels.forEach((reel) => reel.spin());
 
@@ -145,11 +162,12 @@ export function Slot(options) {
       return (this.checking = false);
     }
 
+    this.soundEffects.win.play();
     console.group('Winners');
     const totalWin = winners.reduce((acc, { money }) => acc + money, 0);
     for (const winner of winners) {
       // We have a winner, let's highlight the blocks
-      this.effects.highlight(winner.blocks);
+      this.visualEffects.highlight(winner.blocks);
       console.info(`Winner: ${winner.type}, line: ${winner.rowIndex}, money: ${winner.money}`);
     }
 
