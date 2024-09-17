@@ -1,9 +1,27 @@
-import { BARx1, BARx2, BARx3, Cherry, ModeRandom, Seven } from './constants.js';
+import {
+  AnyBar,
+  BARx1,
+  BARx2,
+  BARx3,
+  Cherry,
+  CherryOrSeven,
+  LineFive,
+  LineFour,
+  LineOne,
+  LineThree,
+  LineTwo,
+  ModeRandom,
+  Seven,
+  tableLines,
+  tableSymbols,
+} from './constants.js';
 import { Easing } from 'https://unpkg.com/@tweenjs/tween.js@23.1.3/dist/tween.esm.js';
 import { AssetLoader } from './loader.mjs';
 import { Slot } from './slot.mjs';
 import { Engine } from './engine.mjs';
 import { configureGUI } from './gui.mjs';
+import { payTable } from './payTable.mjs';
+import { createImage } from './utils.mjs';
 
 /**
  * @import {ReelSymbols} from './reel.mjs';
@@ -117,6 +135,68 @@ assetLoader.onLoadFinish((assets) => {
   engine.start();
 
   configureGUI(slot, engine);
+
+  tableBuilder({
+    class: 'table table-sm table-bordered table-hover',
+    id: 'myFirstTable',
+    border: 1,
+  })
+    .setHeader({
+      Symbol: { key: 'symbol', width: 130 },
+      'Line 01': { key: LineOne.toString(), width: 100 },
+      'Line 02': { key: LineTwo.toString(), width: 100 },
+      'Line 03': { key: LineThree.toString(), width: 100 },
+      'Line 04': { key: LineFour.toString(), width: 100 },
+      'Line 05': { key: LineFive.toString(), width: 100 },
+    })
+    .setBody(
+      tableSymbols.map((symbol) =>
+        tableLines.reduce(
+          (row, line) => ({
+            ...row,
+            [line]: `$<b>${payTable[symbol][line]}</b>`,
+          }),
+          { symbol },
+        ),
+      ),
+    )
+    .on('symbol', (tr) => {
+      const width = 40;
+      const content = tr.dataset.content;
+      switch (content) {
+        case Cherry:
+          tr.innerHTML = createImage({ src: symbols.Cherry.src, content, width });
+          break;
+        case Seven:
+          tr.innerHTML = createImage({ src: symbols.Seven.src, content, width });
+          break;
+        case CherryOrSeven:
+          tr.innerHTML =
+            '<div class="d-flex justify-content-center gap-2">' +
+            createImage({ src: symbols.Cherry.src, content: Cherry, width }) +
+            createImage({ src: symbols.Seven.src, content: Seven, width }) +
+            '</div>';
+          break;
+        case BARx3:
+          tr.innerHTML = createImage({ src: symbols['3xBAR'].src, content, width });
+          break;
+        case BARx2:
+          tr.innerHTML = createImage({ src: symbols['2xBAR'].src, content, width });
+          break;
+        case BARx1:
+          tr.innerHTML = createImage({ src: symbols['1xBAR'].src, content, width });
+          break;
+        case AnyBar:
+          tr.innerHTML =
+            '<div class="d-flex justify-content-center gap-2">' +
+            createImage({ src: symbols['1xBAR'].src, content: BARx1, width }) +
+            createImage({ src: symbols['2xBAR'].src, content: BARx2, width }) +
+            createImage({ src: symbols['3xBAR'].src, content: BARx3, width }) +
+            '</div>';
+          break;
+      }
+    })
+    .appendTo(document.querySelector(`#pay-table-modal .modal-body`));
 });
 
 assetLoader.start();

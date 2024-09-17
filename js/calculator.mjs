@@ -75,7 +75,7 @@ export function Calculator(reels) {
       switch (true) {
         case allSymbolsMatch: {
           const symbol = blocks.at(0).symbol;
-          const money = payTable[AllSame][symbol][rowIndex];
+          const money = payTable[symbol][rowIndex];
 
           winners.push({ type: AllSame, rowIndex, blocks, money });
           break;

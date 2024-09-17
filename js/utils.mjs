@@ -42,3 +42,7 @@ export function decToHex(value) {
  * @returns {Promise<unknown>}
  */
 export const waitFor = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const createImage = ({ src, width, content }) => {
+  return `<img src="${src}" alt="${content}" width="${width}" class="img-thumbnail rounded" />`;
+};

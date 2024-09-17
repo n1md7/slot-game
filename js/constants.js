@@ -59,3 +59,6 @@ export const LineFive = 4;
 
 export const ModeFixed = 'fixed';
 export const ModeRandom = 'random';
+
+export const tableSymbols = [Cherry, Seven, CherryOrSeven, BARx3, BARx2, BARx1, AnyBar];
+export const tableLines = [LineOne, LineTwo, LineThree, LineFour, LineFive];
