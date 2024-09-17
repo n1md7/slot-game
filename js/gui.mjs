@@ -59,9 +59,9 @@ export const configureTweakPane = (slot, engine) => {
   block.add(slot.options.block, 'padding', 0, 48, 1);
 
   const volume = gui.addFolder('Audio Volume', slot.options.volume);
-  volume.add(slot.options.volume, 'background', 0, 1, 0.1);
-  volume.add(slot.options.volume, 'win', 0, 1, 0.1);
-  volume.add(slot.options.volume, 'spin', 0, 1, 0.1);
+  volume.add(slot.options.volume, 'background', 0, 1, 0.01);
+  volume.add(slot.options.volume, 'win', 0, 1, 0.01);
+  volume.add(slot.options.volume, 'spin', 0, 1, 0.01);
   volume.onFinishChange(({ property }) => {
     if (slot.soundEffects[property]) {
       slot.soundEffects[property].setVolume(slot.options.volume[property]);
