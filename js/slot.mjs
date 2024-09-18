@@ -87,6 +87,12 @@ export function Slot(options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.autoSpin = false;
+
+  /**
+   * @private
    * @readonly
    * @return {number}
    */
@@ -126,6 +132,7 @@ export function Slot(options) {
    * @readonly
    */
   this.spin = () => {
+    console.info(this.isSpinning, this.checking);
     if (!this.player.hasEnoughCredits()) return;
     if (this.isSpinning || this.checking) return;
 
@@ -133,7 +140,13 @@ export function Slot(options) {
     this.player.subtractSpinCost();
     this.reels.forEach((reel) => reel.spin());
 
-    waitFor(options.reel.animationTime).then(() => this.evaluateWin());
+    waitFor(options.reel.animationTime)
+      .then(this.evaluateWin)
+      .then(() => {
+        if (this.autoSpin) {
+          this.spin(); // FIXME: not triggered when delay is low
+        }
+      });
   };
 
   /**
@@ -159,7 +172,10 @@ export function Slot(options) {
     const winners = this.calculator.calculate();
 
     if (!winners.length) {
-      return (this.checking = false);
+      // FIXME this delay
+      return waitFor(100).then(() => {
+        this.checking = false;
+      });
     }
 
     this.soundEffects.win.play();
@@ -178,7 +194,7 @@ export function Slot(options) {
 
     // Let's keep user from spinning again while we are highlighting the blocks
     // We add a short delay to make the animation more visible and clear that the user won
-    waitFor(options.reel.animationTime / 2).then(() => {
+    return waitFor(options.reel.animationTime / 2).then(() => {
       this.checking = false;
     });
   };

@@ -63,9 +63,9 @@ assetLoader.onLoadFinish((assets) => {
       MAX_BET: 15,
     },
     volume: {
-      background: 0.1,
-      win: 0.2,
-      spin: 0.2,
+      background: 0.04,
+      win: 0.3,
+      spin: 0.1,
     },
     canvas: config.ui.canvas,
     mode: ModeRandom,
