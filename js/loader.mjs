@@ -46,7 +46,7 @@ export function AssetLoader(assets) {
    * @returns {string}
    */
   const getAssetNameFrom = (src) => {
-    return src.replace(new RegExp('^(./img/)|(.png|.jpg|.jpeg)$', 'ig'), '');
+    return src.replace(new RegExp('^(.*/img/)|(.png|.jpg|.jpeg)$', 'ig'), '');
   };
 
   /**

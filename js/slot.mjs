@@ -132,7 +132,6 @@ export function Slot(options) {
    * @readonly
    */
   this.spin = () => {
-    console.info(this.isSpinning, this.checking);
     if (!this.player.hasEnoughCredits()) return;
     if (this.isSpinning || this.checking) return;
 
@@ -144,7 +143,9 @@ export function Slot(options) {
       .then(this.evaluateWin)
       .then(() => {
         if (this.autoSpin) {
-          this.spin(); // FIXME: not triggered when delay is low
+          return waitFor(100).then(() => {
+            return options.buttons.spinManual.click();
+          });
         }
       });
   };
@@ -172,29 +173,29 @@ export function Slot(options) {
     const winners = this.calculator.calculate();
 
     if (!winners.length) {
-      // FIXME this delay
       return waitFor(100).then(() => {
         this.checking = false;
       });
     }
 
     this.soundEffects.win.play();
-    console.group('Winners');
+    console.group('Current win');
     const totalWin = winners.reduce((acc, { money }) => acc + money, 0);
     for (const winner of winners) {
       // We have a winner, let's highlight the blocks
       this.visualEffects.highlight(winner.blocks);
-      console.info(`Winner: ${winner.type}, line: ${winner.rowIndex}, money: ${winner.money}`);
+      console.info(`Winner: ${winner.type}, line: ${winner.rowIndex}, win: $${winner.money}`);
     }
 
     this.player.addWin(totalWin);
 
-    console.info(`Total win: ${totalWin}`);
+    console.info(`Total win: $${totalWin}`);
     console.groupEnd();
 
     // Let's keep user from spinning again while we are highlighting the blocks
     // We add a short delay to make the animation more visible and clear that the user won
-    return waitFor(options.reel.animationTime / 2).then(() => {
+    // We set delay at least 2 seconds, or the animation time, whichever is greater
+    return waitFor(Math.max(options.reel.animationTime, 2000)).then(() => {
       this.checking = false;
     });
   };
@@ -237,5 +238,87 @@ export function Slot(options) {
   this.updateCanvasSize = () => {
     options.canvas.setAttribute('width', this.getWidth().toString());
     options.canvas.setAttribute('height', this.getHeight().toString());
+  };
+
+  /**
+   * @private
+   * @readonly
+   */
+  this.subscribeSpinButton = () => {
+    options.buttons.spinManual.onclick = () => {
+      this.spin();
+      this.player.onWin(0); // Reset win amount
+    };
+  };
+
+  /**
+   * @private
+   * @readonly
+   */
+  this.subscribeAutoSpinButton = () => {
+    options.buttons.spinAuto.onclick = () => {
+      this.autoSpin = !this.autoSpin;
+      options.buttons.spinAuto.querySelector('b').innerText = `AUTO | ${this.autoSpin ? 'ON' : 'OFF'}`;
+      if (this.autoSpin) {
+        options.buttons.spinManual.click();
+      }
+    };
+  };
+
+  /**
+   * @private
+   * @readonly
+   */
+  this.subscribeMinusBetButton = () => {
+    options.buttons.minusBet.onclick = () => this.player.decBet();
+  };
+
+  /**
+   * @private
+   * @readonly
+   */
+  this.subscribePlusBetButton = () => {
+    options.buttons.plusBet.onclick = () => this.player.incBet();
+  };
+
+  /**
+   * @private
+   * @readonly
+   */
+  this.subscribePlayerEvents = () => {
+    this.player.onUpdate = (credits, bet) => {
+      options.text.credits.textContent = `$${credits}`;
+      options.text.bet.textContent = `$${bet}`;
+    };
+    this.player.onWin = (amount) => {
+      options.text.winAmount.textContent = `$${amount}`;
+    };
+  };
+
+  /**
+   * @private
+   * @readonly
+   *
+   * @description Subscribe to body click event to play background music, when the user clicks anywhere on the page.
+   * It is required since the browser blocks autoplaying audio on page load.
+   */
+  this.subscribeBodyClick = () => {
+    document.body.onclick = () => this.backgroundMusic.playOnce();
+  };
+
+  /**
+   * @public
+   * @readonly
+   */
+  this.subscribeEvents = () => {
+    this.subscribeSpinButton();
+    this.subscribeAutoSpinButton();
+    this.subscribeMinusBetButton();
+    this.subscribePlusBetButton();
+
+    this.subscribePlayerEvents();
+    this.subscribeBodyClick();
+
+    this.player.initialize();
   };
 }
