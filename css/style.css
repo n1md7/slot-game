@@ -1,36 +1,51 @@
-#slot {
-  border: solid;
-  box-sizing: content-box;
+:root {
+  --btn-bg: #313030;
+  --btn-color: white;
+  --btn-border: solid 4px white;
 }
 
-.blink {
-  animation: blink 0.4s infinite alternate;
-  -webkit-animation: blink 0.4s infinite alternate;
+.highlight {
+  animation: highlight 0.3s infinite alternate;
+  -webkit-animation: highlight 0.3s infinite alternate;
 }
-@keyframes blink {
+
+@keyframes highlight {
   to {
-    background: #c3ad00;
+    background: white;
+    color: #dfd19a;
   }
 }
-@-webkit-keyframes blink {
+
+@-webkit-keyframes highlight {
   to {
-    background: #c3ad00;
+    background: black;
+    color: gold;
   }
 }
+
+* {
+  box-sizing: border-box;
+  font-family: 'Black Ops One', sans-serif;
+}
+
 
 body {
-  background: black !important;
+  background-image: url("../img/background.webp");
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(6px);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
 }
 
 .gold {
   color: gold !important;
 }
+
 .green {
   color: green;
-}
-
-.v-align {
-  vertical-align: inherit !important;
 }
 
 div.modal-footer,
@@ -38,4 +53,105 @@ div.modal-body,
 div.modal-header {
   background-color: #000000de;
   color: white;
+}
+
+.lil-gui {
+  --background-color: #000000A0;
+  --text-color: white;
+  --title-background-color: #000000D3;
+  --title-text-color: white;
+}
+
+.lil-gui.autoPlace {
+  right: 0;
+}
+
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  position: fixed;
+}
+
+#slot {
+  border: 4px solid white;
+  max-width: 100%;
+  height: auto;
+  box-sizing: content-box;
+  border-radius: 40px;
+}
+
+.winner-display {
+  color: #FFD700;
+  font-size: 28px;
+  border-radius: 20px;
+  border: 4px solid white;
+  font-weight: bold;
+  padding: 4px 8px;
+}
+
+#spin-manual {
+  background-color: #9a0102;
+  color: var(--btn-color);
+  border: var(--btn-border);
+  border-radius: 40px;
+  padding: 16px;
+  font-size: 24px;
+  cursor: pointer;
+  justify-content: center;
+  text-align: center;
+  flex: 1;
+}
+
+.bet-action-btn {
+  border-radius: 50%;
+  border: var(--btn-border);
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+}
+
+#spin-auto, #pay-table {
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  border: var(--btn-border);
+  border-radius: 40px;
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.controls .left {
+  font-size: 20px;
+}
+
+.controls .middle {
+  width: 250px;
+}
+
+button:hover {
+  background-color: gold !important;
+}
+
+button:active {
+  background-color: #afaeae !important;
+}
+
+#pay-table-modal {
+  position: fixed;
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+
+table tr td {
+  text-align: center;
+  vertical-align: middle;
 }

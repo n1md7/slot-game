@@ -1,11 +1,11 @@
 {
   "name": "slot-game",
   "version": "1.0.0",
-  "description": "Javascript 3x3 slot game",
+  "description": "Javascript NxN slot game",
   "scripts": {
     "format:code": "npx prettier --write .",
     "format:check": "npx prettier --check .",
-    "serve": "npx http-server ."
+    "serve": "npx http-server . -o -c-1 -p 8080 --utc"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/n1md7/slot-game#readme",
   "devDependencies": {
-    "http-server": "^14.0.0",
-    "prettier": "2.4.1"
+    "http-server": "^14.1.1",
+    "prettier": "^3.3.3"
   }
 }
