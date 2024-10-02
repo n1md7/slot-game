@@ -63,19 +63,21 @@ assetLoader.onLoadFinish((assets) => {
       MAX_BET: 15,
     },
     volume: {
-      background: 0.04,
+      background: 0.02,
       win: 0.3,
       spin: 0.1,
     },
     canvas: config.ui.canvas,
+    buttons: config.ui.btn,
+    text: config.ui.text,
     mode: ModeRandom,
     color: {
-      background: '#061a37',
-      border: '#FFFFFF',
+      background: '#1a1a1a',
+      border: '#1f2023',
     },
     reel: {
-      rows: 3,
-      cols: 4,
+      rows: 2,
+      cols: 3,
       animationTime: 1500,
       animationFunction: Easing.Back.Out,
       padding: {
@@ -91,37 +93,10 @@ assetLoader.onLoadFinish((assets) => {
     symbols,
   });
 
-  const addHighlightWinAmount = () => {
-    config.ui.text.winAmount.parentElement.classList.add('highlight');
-  };
-  const removeHighlightWinAmount = () => {
-    config.ui.text.winAmount.parentElement.classList.remove('highlight');
-  };
-
-  slot.updateCanvasSize();
-
   const engine = new Engine(slot, { FPS: 60 });
 
-  // Bind events
-  config.ui.btn.spinManual.onclick = () => {
-    slot.spin();
-    removeHighlightWinAmount();
-    slot.player.onWin(0); // Reset win amount
-  };
-  // config.ui.btn.spinAuto.onclick = () => engine.toggleAutoSpin();
-  config.ui.btn.minusBet.onclick = () => slot.player.decBet();
-  config.ui.btn.plusBet.onclick = () => slot.player.incBet();
-  document.body.onclick = () => slot.backgroundMusic.playOnce();
-
-  slot.player.onUpdate = (credits, bet) => {
-    config.ui.text.credits.textContent = `$${credits}`;
-    config.ui.text.bet.textContent = `$${bet}`;
-  };
-  slot.player.onWin = (amount) => {
-    if (amount > 0) addHighlightWinAmount(amount);
-    config.ui.text.winAmount.textContent = `$${amount}`;
-  };
-  slot.player.initialize();
+  slot.updateCanvasSize();
+  slot.subscribeEvents();
 
   engine.start();
 

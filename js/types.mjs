@@ -138,6 +138,21 @@
  */
 
 /**
+ * @typedef {Object} Buttons - Slot buttons
+ * @property {HTMLButtonElement} spinManual - Spin button
+ * @property {HTMLButtonElement} spinAuto - Auto spin button
+ * @property {HTMLButtonElement} minusBet - Decrease bet button
+ * @property {HTMLButtonElement} plusBet - Increase bet button
+ */
+
+/**
+ * @typedef {Object} Text - Slot text elements
+ * @property {HTMLSpanElement} credits - Credits text
+ * @property {HTMLSpanElement} bet - Bet text
+ * @property {HTMLSpanElement} winAmount - Win amount text
+ */
+
+/**
  * @typedef {Object} SlotOptions - Slot options
  * @property {HTMLCanvasElement} canvas - Canvas instance
  * @property {PlayerOptions} player - Player options
@@ -148,4 +163,6 @@
  * @property {ReelSymbol[]} [fixedSymbols=[]] - Slot fixed symbols array, for fixed mode
  * @property {ReelOptions} reel - Slot reels
  * @property {AudioVolume} volume - Slot audio volume
+ * @property {Buttons} buttons - Slot buttons
+ * @property {Text} text - Slot text elements
  */

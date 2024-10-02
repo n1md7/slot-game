@@ -4,25 +4,6 @@
   --btn-border: solid 4px white;
 }
 
-.highlight {
-  animation: highlight 0.3s infinite alternate;
-  -webkit-animation: highlight 0.3s infinite alternate;
-}
-
-@keyframes highlight {
-  to {
-    background: white;
-    color: #dfd19a;
-  }
-}
-
-@-webkit-keyframes highlight {
-  to {
-    background: black;
-    color: gold;
-  }
-}
-
 * {
   box-sizing: border-box;
   font-family: 'Black Ops One', sans-serif;
@@ -66,7 +47,6 @@ div.modal-header {
   right: 0;
 }
 
-
 .game-container {
   display: flex;
   flex-direction: column;
@@ -82,7 +62,7 @@ div.modal-header {
 }
 
 #slot {
-  border: 4px solid white;
+  border: 4px solid #343a40;
   max-width: 100%;
   height: auto;
   box-sizing: content-box;
@@ -93,15 +73,16 @@ div.modal-header {
   color: #FFD700;
   font-size: 28px;
   border-radius: 20px;
-  border: 4px solid white;
+  border: 0;
   font-weight: bold;
-  padding: 4px 8px;
+  overflow: hidden;
+  padding: 8px 16px;
 }
 
 #spin-manual {
   background-color: #9a0102;
-  color: var(--btn-color);
-  border: var(--btn-border);
+  color: wheat;
+  border: 4px solid #dc3545;
   border-radius: 40px;
   padding: 16px;
   font-size: 24px;
@@ -113,15 +94,15 @@ div.modal-header {
 
 .bet-action-btn {
   border-radius: 50%;
-  border: var(--btn-border);
+  border: solid 4px #343a40;
   background-color: var(--btn-bg);
-  color: var(--btn-color);
+  color: wheat;
 }
 
 #spin-auto, #pay-table {
   background-color: var(--btn-bg);
-  color: var(--btn-color);
-  border: var(--btn-border);
+  color: wheat;
+  border: 4px solid #343a40;
   border-radius: 40px;
   padding: 4px 8px;
   font-size: 13px;
@@ -137,7 +118,8 @@ div.modal-header {
 }
 
 button:hover {
-  background-color: gold !important;
+  opacity: 0.8 !important;
+  box-shadow: 0 0 10px 0 #000000;
 }
 
 button:active {
