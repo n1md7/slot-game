@@ -59,6 +59,7 @@ div.modal-header {
   bottom: 0;
   margin: auto;
   position: fixed;
+  z-index: -1;
 }
 
 #slot {
