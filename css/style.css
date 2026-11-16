@@ -11,7 +11,7 @@
 
 
 body {
-  background-image: url("../img/background.webp");
+  background-image: url("../img/background.png");
   width: 100vw;
   height: 100vh;
   backdrop-filter: blur(6px);
